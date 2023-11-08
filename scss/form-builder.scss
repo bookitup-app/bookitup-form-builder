@@ -161,8 +161,8 @@
       -ms-user-select: none;
       user-select: none;
       .rfb-item {
-       
-        padding: 10px 20px;
+
+        padding: 5px 10px;
         &.SortableItem {
           position: relative;
           .form-group {
@@ -437,7 +437,7 @@
 }
 
 .form-place-holder {
-  margin:10px; 
+  margin:10px;
   border:2px dashed #bbb;
   -moz-border-radius:5px;
   -webkit-border-radius:5px;

@@ -49,7 +49,8 @@ class ReactFormBuilder extends React.Component {
     };
 
     const language = this.props.locale ? this.props.locale : 'en';
-    const currentAppLocale = AppLocale[language];
+    const appLocaleOverride = this.props.appLocaleOverride || {};
+    const currentAppLocale = { ...AppLocale, ...appLocaleOverride }[language];
     if (this.props.toolbarItems) { toolbarProps.items = this.props.toolbarItems; }
     return (
       <DndProvider backend={HTML5Backend}>
@@ -97,7 +98,8 @@ class ReactFormBuilder extends React.Component {
 
 function ReactFormGenerator(props) {
   const language = props.locale ? props.locale : 'en';
-  const currentAppLocale = AppLocale[language];
+  const appLocaleOverride = props.appLocaleOverride || {};
+  const currentAppLocale = { ...AppLocale, ...appLocaleOverride }[language];
   return (
     <IntlProvider
       locale={currentAppLocale.locale}

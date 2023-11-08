@@ -420,6 +420,14 @@ export default class FormElementsEdit extends React.Component {
             </div>
           </div>
         }
+        { this.props.element.hasOwnProperty('sitekey') &&
+          <div>
+            <div className="form-group">
+              <label className="control-label" htmlFor="sitekeyInput">Sitekey:</label>
+              <input id="sitekeyInput" type="text" className="form-control" defaultValue={this.props.element.sitekey} onBlur={this.updateElement.bind(this)} onChange={this.editElementProp.bind(this, 'sitekey', 'value')} />
+            </div>
+          </div>
+        }
         { this.props.element.hasOwnProperty('options') &&
           <DynamicOptionList showCorrectColumn={this.props.showCorrectColumn}
             canHaveOptionCorrect={canHaveOptionCorrect}

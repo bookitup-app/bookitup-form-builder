@@ -336,6 +336,15 @@ class Toolbar extends React.Component {
         label: intl.formatMessage({ id: 'place-holder-label' }),
         field_name: 'file_upload_',
       },
+      {
+        key: 'Recaptcha',
+        name: intl.formatMessage({ id: 'recaptcha' }),
+        icon: 'fas fa-user-shield',
+        sitekey: 'YOUR_API_KEY',
+        label: intl.formatMessage({ id: 'recaptcha' }),
+        field_name: 'recaptcha_',
+        required: true,
+      },
     ];
   }
 
@@ -372,6 +381,12 @@ class Toolbar extends React.Component {
       elementOptions.italic = false;
     }
 
+    if (item.required) { elementOptions.required = item.required; }
+
+    if (item.skipValidation) { elementOptions.skipValidation = item.skipValidation; }
+
+    if (item.validationMessageOverride) { elementOptions.validationMessageOverride = item.validationMessageOverride; }
+
     if (item.canHaveAnswer) { elementOptions.canHaveAnswer = item.canHaveAnswer; }
 
     if (item.canReadOnly) { elementOptions.readOnly = false; }
@@ -406,8 +421,11 @@ class Toolbar extends React.Component {
       elementOptions.dateFormat = item.dateFormat;
       elementOptions.timeFormat = item.timeFormat;
       elementOptions.showTimeSelect = item.showTimeSelect;
+      elementOptions.showYearPicker = item.showYearPicker;
+      elementOptions.showYearDropdown = item.showYearDropdown;
       elementOptions.showTimeSelectOnly = item.showTimeSelectOnly;
       elementOptions.showTimeInput = item.showTimeInput;
+      elementOptions.datePickerProps = item.datePickerProps;
     }
 
     if (elementKey === 'Download') {
@@ -422,6 +440,10 @@ class Toolbar extends React.Component {
       elementOptions.max_value = item.max_value;
       elementOptions.min_label = item.min_label;
       elementOptions.max_label = item.max_label;
+    }
+
+    if (item.key === 'Recaptcha') {
+      elementOptions.sitekey = item.sitekey;
     }
 
     if (item.element === 'MultiColumnRow') {
@@ -450,7 +472,7 @@ class Toolbar extends React.Component {
     store.dispatch('create', this.create(item));
   }
 
-  renderItem = (item) => (<ToolbarItem data={item} key={item.key} onClick={this._onClick.bind(this, item)} onCreate={this.create} />)
+  renderItem = (item) => (<ToolbarItem data={item} key={`${item.key}_${ID.uuid()}`} onClick={this._onClick.bind(this, item)} onCreate={this.create} />)
 
   render() {
     const { items, grouped, groupKeys } = buildGroupItems(this.state.items);

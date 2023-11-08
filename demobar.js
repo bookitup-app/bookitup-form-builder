@@ -67,9 +67,10 @@ export default class Demobar extends React.Component {
   }
 
   // eslint-disable-next-line no-unused-vars
-  _onSubmit(data) {
+  async _onSubmit(data) {
     // console.log('onSubmit', data);
     // Place code to post json data to server here
+    return new Promise((resolve) => resolve({ ok: true }));
   }
 
   saveFormData() {
@@ -116,7 +117,10 @@ export default class Demobar extends React.Component {
                   // onSubmit={this._onSubmit}
                   variables={this.props.variables}
                   data={this.state.data}
-                  locale='en'/>
+                  locale='en'
+                  inlineValidation
+                  showSubmitMessage
+                  />
 
                 <div className="modal-footer">
                   <button type="button" className="btn btn-default" data-dismiss="modal" onClick={this.closePreview.bind(this)}>Close</button>

@@ -6,6 +6,11 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import { EventEmitter } from 'fbemitter';
 import { injectIntl } from 'react-intl';
+import { registerLocale, setDefaultLocale } from 'react-datepicker';
+import de from 'date-fns/locale/de';
+import en from 'date-fns/locale/en-US';
+import vi from 'date-fns/locale/vi';
+import Banner from './banner';
 import FormValidator from './form-validator';
 import FormElements from './form-elements';
 import { TwoColumnRow, ThreeColumnRow, MultiColumnRow } from './multi-column';
@@ -14,13 +19,25 @@ import CustomElement from './form-elements/custom-element';
 import Registry from './stores/registry';
 
 const {
-  Image, Checkboxes, Signature, Download, Camera, FileUpload,
+  Image, Checkboxes, Signature, Download, Camera, FileUpload, Recaptcha,
 } = FormElements;
 
+const usableLocales = {
+  en,
+  de,
+  vi,
+};
 class ReactForm extends React.Component {
   form;
 
   inputs = {};
+
+  state = {
+    errors: {},
+    showingBanner: false,
+    submitOk: undefined,
+    attemptingSubmit: false,
+  };
 
   answerData;
 
@@ -85,6 +102,8 @@ class ReactForm extends React.Component {
       $item.value = ref.state.img;
     } else if (item.element === 'FileUpload') {
       $item.value = ref.state.fileUpload;
+    } else if (item.element === 'Recaptcha') {
+      $item.value = ref.state.response;
     } else if (ref && ref.inputField && ref.inputField.current) {
       $item = ReactDOM.findDOMNode(ref.inputField.current);
       if ($item && typeof $item.value === 'string') {
@@ -141,7 +160,7 @@ class ReactForm extends React.Component {
           if ($item.value === 0) {
             invalid = true;
           }
-        } else if ($item.value === undefined || $item.value.length < 1) {
+        } else if ($item.value === undefined || $item.value === null || $item.value.length < 1) {
           invalid = true;
         }
       }
@@ -162,7 +181,7 @@ class ReactForm extends React.Component {
       item.options.forEach(option => {
         const $option = ReactDOM.findDOMNode(ref.options[`child_ref_${option.key}`]);
         if ($option.checked) {
-          checked_options.push(option.key);
+          checked_options.push(this.props.useOptionNameInsteadOfKey ? option.text : option.key);
         }
       });
       itemData.value = checked_options;
@@ -199,26 +218,40 @@ class ReactForm extends React.Component {
     }
   }
 
-  handleSubmit(e) {
+  async handleSubmit(e) {
     e.preventDefault();
 
-    let errors = [];
+    let errors = {};
     if (!this.props.skip_validations) {
       errors = this.validateForm();
-      // Publish errors, if any.
-      this.emitter.emit('formValidation', errors);
+
+      // Publish only error validation messages, if any.
+      this.setState({ ...this.state, errors });
+      this.emitter.emit('formValidation', Object.values(errors));
     }
 
     // Only submit if there are no errors.
-    if (errors.length < 1) {
-      const { onSubmit } = this.props;
-      if (onSubmit) {
-        const data = this._collectFormData(this.props.data);
-        onSubmit(data);
-      } else {
-        const $form = ReactDOM.findDOMNode(this.form);
-        $form.submit();
-      }
+    if (Object.keys(errors).length > 0) {
+      return;
+    }
+    this.setState({ ...this.state, attemptingSubmit: true });
+    const { onSubmit } = this.props;
+    if (onSubmit) {
+      const data = this._collectFormData(this.props.data);
+      await onSubmit(data)
+        .then((response) => this.showBanner(response.ok))
+        .catch(() => this.showBanner(false));
+    } else {
+      const $form = ReactDOM.findDOMNode(this.form);
+
+      await $form.submit();
+    }
+    this.setState({ ...this.state, attemptingSubmit: false });
+  }
+
+  showBanner(successful) {
+    if (this.props.showSubmitMessage) {
+      this.setState({ ...this.state, submitOk: successful, showingBanner: true });
     }
   }
 
@@ -241,7 +274,7 @@ class ReactForm extends React.Component {
   }
 
   validateForm() {
-    const errors = [];
+    const errors = {};
     let data_items = this.props.data;
     const { intl } = this.props;
 
@@ -255,7 +288,7 @@ class ReactForm extends React.Component {
       }
 
       if (this._isInvalid(item)) {
-        errors.push(`${item.label} ${intl.formatMessage({ id: 'message.is-required' })}!`);
+        errors[item.field_name] = `${item.label} ${intl.formatMessage({ id: 'message.is-required' })}!`;
       }
 
       if (item.element === 'EmailInput') {
@@ -267,8 +300,8 @@ class ReactForm extends React.Component {
               /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
             );
           const checkEmail = validateEmail(emailValue);
-          if (!checkEmail) {
-            errors.push(`${item.label} ${intl.formatMessage({ id: 'message.invalid-email' })}`);
+          if (!item.skipValidation && !checkEmail) {
+            errors[item.field_name] = `${item.label}: ${intl.formatMessage({ id: 'message.invalid-email' })}`;
           }
         }
       }
@@ -282,14 +315,14 @@ class ReactForm extends React.Component {
             /^[+]?(1\-|1\s|1|\d{3}\-|\d{3}\s|)?((\(\d{3}\))|\d{3})(\-|\s)?(\d{3})(\-|\s)?(\d{4})$/g
           );
           const checkPhone = validatePhone(phoneValue);
-          if (!checkPhone) {
-            errors.push(`${item.label} ${intl.formatMessage({ id: 'message.invalid-phone-number' })}`);
+          if (!item.skipValidation && !checkPhone) {
+            errors[item.field_name] = `${item.label}: ${intl.formatMessage({ id: 'message.invalid-phone-number' })}`;
           }
         }
       }
 
       if (this.props.validateForCorrectness && this._isIncorrect(item)) {
-        errors.push(`${item.label} ${intl.formatMessage({ id: 'message.was-answered-incorrectly' })}!`);
+        errors[item.field_name] = `${item.label} ${intl.formatMessage({ id: 'message.was-answered-incorrectly' })}!`;
       }
     });
 
@@ -301,7 +334,7 @@ class ReactForm extends React.Component {
     return data.find(x => x.id === id);
   }
 
-  getInputElement(item) {
+  getInputElement(item, validationMessage) {
     if (item.custom) {
       return this.getCustomElement(item);
     }
@@ -313,7 +346,10 @@ class ReactForm extends React.Component {
       key={`form_${item.id}`}
       data={item}
       read_only={this.props.read_only}
-      defaultValue={this._getDefaultValue(item)} />);
+      defaultValue={this._getDefaultValue(item)}
+      inlineValidation={this.props.inlineValidation}
+      validationMessage={validationMessage}
+      />);
   }
 
   getContainerElement(item, Element) {
@@ -368,6 +404,10 @@ class ReactForm extends React.Component {
     return backButton || <a href={this.props.back_action} className='btn btn-default btn-cancel btn-big'>{backName}</a>;
   }
 
+  handleBannerToggled = (showingBanner) => {
+    this.setState({ ...this.state, showingBanner });
+  }
+
   render() {
     let data_items = this.props.data;
 
@@ -382,6 +422,12 @@ class ReactForm extends React.Component {
     });
 
     const items = data_items.filter(x => !x.parentId).map(item => {
+      let validationMessage = this.state.errors[item.field_name];
+
+      if (validationMessage && item.validationMessageOverride) {
+        validationMessage = item.validationMessageOverride;
+      }
+
       if (!item) return null;
       switch (item.element) {
         case 'TextInput':
@@ -395,7 +441,7 @@ class ReactForm extends React.Component {
         case 'Rating':
         case 'Tags':
         case 'Range':
-          return this.getInputElement(item);
+          return this.getInputElement(item, validationMessage);
         case 'CustomElement':
           return this.getCustomElement(item);
         case 'MultiColumnRow':
@@ -416,8 +462,8 @@ class ReactForm extends React.Component {
           return <Download download_path={this.props.download_path} mutable={true} key={`form_${item.id}`} data={item} />;
         case 'Camera':
           return <Camera ref={c => this.inputs[item.field_name] = c} read_only={this.props.read_only || item.readOnly} mutable={true} key={`form_${item.id}`} data={item} defaultValue={this._getDefaultValue(item)} />;
-          case 'FileUpload':
-            return (
+        case 'FileUpload':
+          return (
               <FileUpload
                 ref={(c) => (this.inputs[item.field_name] = c)}
                 read_only={this.props.read_only || item.readOnly}
@@ -426,6 +472,18 @@ class ReactForm extends React.Component {
                 data={item}
                 defaultValue={this._getDefaultValue(item)}
               />
+          );
+        case 'Recaptcha':
+          return (
+          <Recaptcha
+            key={`form_${item.id}`}
+            ref={(c) => (this.inputs[item.field_name] = c)}
+            read_only={this.props.read_only || item.readOnly}
+            mutable={true}
+            data={item}
+            validationMessage={validationMessage}
+            inlineValidation={this.props.inlineValidation}
+            />
             );
         default:
           return this.getSimpleElement(item);
@@ -435,9 +493,23 @@ class ReactForm extends React.Component {
     const formTokenStyle = {
       display: 'none',
     };
+
+    const bannerText = this.state.submitOk
+      ? this.props.submitMessageText ?? this.props.intl.formatMessage({ id: 'message.submit-successful' })
+      : this.props.intl.formatMessage({ id: 'error.sending-request-failed' });
+
+    // FormBuilder datePicker formats
+    if (usableLocales[this.props.locale] !== undefined) {
+      registerLocale(this.props.locale, usableLocales[this.props.locale]);
+      setDefaultLocale(this.props.locale);
+    }
+
+    const showingSubmitButton = !this.props.hide_actions && !this.state.attemptingSubmit;
+
     return (
       <div>
-          <FormValidator emitter={this.emitter} />
+          {/* Hide top validation messaged display if inlineValidation */}
+          {!this.props.inlineValidation && (<FormValidator emitter={this.emitter} />)}
           <div className='react-form-builder-form'>
             <form encType='multipart/form-data' ref={c => this.form = c} action={this.props.form_action} onBlur={this.handleBlur} onChange={this.handleChange} onSubmit={this.handleSubmit} method={this.props.form_method}>
               {this.props.authenticity_token &&
@@ -449,14 +521,22 @@ class ReactForm extends React.Component {
               }
               {items}
               <div className='btn-toolbar'>
-                {!this.props.hide_actions &&
-                  this.handleRenderSubmit()
+                {
+                showingSubmitButton && this.handleRenderSubmit()
                 }
                 {!this.props.hide_actions && this.props.back_action &&
                   this.handleRenderBack()
                 }
               </div>
             </form>
+            <div style={{ padding: 10 }}>
+              <Banner
+                className={this.state.submitOk ? undefined : 'banner-error'}
+                title={bannerText}
+                showBanner={this.state.showingBanner}
+                setShowBanner={this.handleBannerToggled}
+              />
+            </div>
           </div>
       </div>
     );

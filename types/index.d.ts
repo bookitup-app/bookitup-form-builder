@@ -1,5 +1,6 @@
 /* eslint-disable max-classes-per-file */
 import * as React from 'react';
+import ReactDatePickerProps from 'react-datepicker';
 
 type BaseElement = {
   id: string;
@@ -26,8 +27,11 @@ type BaseElement = {
     | "Fieldset"
     | "File Attachment"
     | "Range"
-    | "Camera";
+    | "Camera"
+    | "Recaptcha";
   showDescription?: boolean;
+  skipValidation?: boolean;
+  validationMessageOverride?: string;
   required: boolean;
   canHaveAlternateForm: boolean;
   canHaveDisplayHorizontal: boolean;
@@ -67,9 +71,12 @@ export type DateElement = {
   defaultToday: boolean;
   readOnly: boolean;
   showTimeSelect: boolean;
+  showYearPicker: boolean;
+  showYearDropdown: boolean;
   showTimeSelectOnly: boolean;
   showTimeInput: boolean;
   timeFormat: string;
+  datePickerProps: ReactDatePickerProps;
 } & FormBuilderInput;
 export type RangeElement = {
   max_label: string;
@@ -118,6 +125,15 @@ export type ToolbarItem = {
   content: string;
 };
 
+export type Lang = {
+  messages: { [x: string]: string };
+  locale: string;
+};
+
+export type Locale = {
+  [x: string]: Lang;
+};
+
 export interface FormBuilderProps {
   toolbarItems?: ToolbarItem[];
   files?: any[];
@@ -125,11 +141,17 @@ export interface FormBuilderProps {
   showCorrectColumn?: boolean;
   show_description?: boolean;
   onLoad?: () => Promise<FormBuilderPostData>;
-  onPost?: (data: FormBuilderPostData) => void;
+  onPost?: (data: FormBuilderPostData) => Promise<{ok: boolean}>;
   saveUrl?: string;
   saveAlways?: boolean;
   editMode?: boolean;
   renderEditForm?: (props: BaseElement) => React.ReactNode;
+  locale?: string;
+  appLocaleOverride?: Locale;
+  inlineValidation?: boolean;
+  submitMessageText?: string;
+  showSubmitMessage?: boolean;
+  useOptionNameInsteadOfKey?: boolean;
 }
 
 export class ReactFormBuilder extends React.Component<FormBuilderProps> {}
@@ -146,7 +168,7 @@ export interface FormGeneratorProps {
   form_method: string;
   action_name?: string;
   onBlur?: (info: FormGeneratorOnSubmitParams[]) => void;
-  onSubmit?: (info: FormGeneratorOnSubmitParams[]) => void;
+  onSubmit?: (info: FormGeneratorOnSubmitParams[]) => Promise<{ok: boolean}>;
   onChange?: (info: FormGeneratorOnSubmitParams[]) => void;
   data: any[];
   back_action?: string;

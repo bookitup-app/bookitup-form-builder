@@ -88,13 +88,13 @@ class DatePicker extends React.Component {
   }
 
   render() {
-    const { showTimeSelect, showTimeSelectOnly, showTimeInput } = this.props.data;
+    const { showTimeSelect, showYearPicker, showYearDropdown, showTimeSelectOnly, showTimeInput, datePickerProps } = this.props.data;
     const props = {};
     props.type = 'date';
     props.className = 'form-control';
     props.name = this.props.data.field_name;
     const readOnly = this.props.data.readOnly || this.props.read_only;
-    const iOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+    // const iOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
     const placeholderText = this.state.formatMask.toLowerCase();
 
     if (this.props.mutable) {
@@ -120,7 +120,7 @@ class DatePicker extends React.Component {
                      value={this.state.value}
                      className="form-control" />
             }
-            { iOS && !readOnly &&
+            {/* { iOS && !readOnly &&
               <input type="date"
                      name={props.name}
                      ref={props.ref}
@@ -128,23 +128,26 @@ class DatePicker extends React.Component {
                      dateFormat="MM/DD/YYYY"
                      value={this.state.value}
                      className = "form-control" />
-            }
-            { !iOS && !readOnly &&
+            } */}
+            {!readOnly &&
               <ReactDatePicker
+                {...datePickerProps}
                 name={props.name}
                 ref={props.ref}
                 onChange={this.handleChange}
                 selected={this.state.internalValue}
-                todayButton={'Today'}
                 className = "form-control"
                 isClearable={true}
                 showTimeSelect={showTimeSelect}
+                showYearPicker={showYearPicker}
+                showYearDropdown={showYearDropdown}
                 showTimeSelectOnly={showTimeSelectOnly}
                 showTimeInput={showTimeInput}
                 dateFormat={this.state.formatMask}
                 portalId="root-portal"
                 autoComplete="off"
-                placeholderText={placeholderText} />
+                placeholderText={placeholderText}
+                />
             }
           </div>
         </div>

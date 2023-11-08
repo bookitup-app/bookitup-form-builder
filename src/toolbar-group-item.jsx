@@ -13,7 +13,7 @@ function ToolbarGroupItem(props) {
     setShow(!show);
   }
 
-  const classShow = 'collapse' + (show ? ' show' : '');
+  const classShow = `collapse${show ? ' show' : ''}`;
   return (
     <li>
       <div className="toolbar-group-item">

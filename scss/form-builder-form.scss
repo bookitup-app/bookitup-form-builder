@@ -7,6 +7,17 @@ input[type="date"]:before {
 input[type="date"] {
   width: 200px;
 }
+
+.invalid {
+  border:1px solid #ff0000
+}
+
+.error {
+  color: #ff0000;
+  font-weight: lighter;
+  font-size: small;
+}
+
 .validation-error {
   position: fixed;
   width: 100%;
