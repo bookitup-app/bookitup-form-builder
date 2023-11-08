@@ -1,13 +1,13 @@
 {
-  "name": "react-form-builder2",
-  "version": "0.16.5",
+  "name": "bookitup-form-builder",
+  "version": "1.0.0",
   "description": "A complete form builder for react.",
   "main": "lib/index.js",
   "types": "types/index.d.ts",
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/kiho/react-form-builder.git"
+    "url": "git+https://github.com/bookitup-app/bookitup-form-builder.git"
   },
   "files": [
     "lib",
@@ -32,6 +32,10 @@
       "name": "Zach Robichaud",
       "email": "zach2825@gmail.com",
       "url": "https://turtlebytes.com"
+    },
+    {
+      "name": "Alexander Mudzo",
+      "email": "alexander.mudzo@gmail.com"
     }
   ],
   "dependencies": {
