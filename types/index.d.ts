@@ -24,7 +24,6 @@ type BaseElement = {
     | "Date"
     | "Signature"
     | "Web site"
-    | "Fieldset"
     | "File Attachment"
     | "Range"
     | "Camera"
@@ -148,16 +147,11 @@ export interface FormBuilderProps {
   renderEditForm?: (props: BaseElement) => React.ReactNode;
   locale?: string;
   appLocaleOverride?: Locale;
-  inlineValidation?: boolean;
-  submitMessageText?: string;
-  showSubmitMessage?: boolean;
-  useOptionNameInsteadOfKey?: boolean;
 }
 
 export class ReactFormBuilder extends React.Component<FormBuilderProps> {}
 
 export interface FormGeneratorOnSubmitParams {
-  id: number;
   name: string;
   custom_name: string;
   value: string | string[];
@@ -167,9 +161,7 @@ export interface FormGeneratorProps {
   form_action: string;
   form_method: string;
   action_name?: string;
-  onBlur?: (info: FormGeneratorOnSubmitParams[]) => void;
   onSubmit?: (info: FormGeneratorOnSubmitParams[]) => Promise<{ok: boolean}>;
-  onChange?: (info: FormGeneratorOnSubmitParams[]) => void;
   data: any[];
   back_action?: string;
   back_name?: string;
@@ -182,7 +174,12 @@ export interface FormGeneratorProps {
   read_only?: boolean;
   // eslint-disable-next-line no-undef
   variables?: Record<any, any>;
-  submitButton?: JSX.Element;
+  locale?: string;
+  appLocaleOverride?: Locale;
+  inlineValidation?: boolean;
+  submitMessageText?: string;
+  showSubmitMessage?: boolean;
+  useOptionNameInsteadOfKey?: boolean;
 }
 
 export class ReactFormGenerator extends React.Component<FormGeneratorProps> {}
@@ -191,12 +188,4 @@ export type ActionType = "load" | "updateOrder" | "delete";
 
 export class ElementStore {
   static dispatch: (type: ActionType, data: any) => void;
-}
-
-export class Registry {
-  static register: (name: string, component: React.ReactNode) => void;
-
-  static list: () => string[];
-
-  static get: (name: string) => React.ReactNode;
 }
