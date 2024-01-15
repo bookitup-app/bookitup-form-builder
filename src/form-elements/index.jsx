@@ -276,6 +276,10 @@ class TextArea extends React.Component {
 
     let inputClasses = 'form-control';
 
+    const showValidationErrors = this.props.inlineValidation && this.props.validationMessage;
+
+    if (showValidationErrors) { inputClasses += ' invalid'; }
+
     if (this.props.data.pageBreakBefore) { baseClasses += ' alwaysbreak'; }
 
     return (
