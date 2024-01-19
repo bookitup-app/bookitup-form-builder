@@ -152,6 +152,10 @@ class EmailInput extends React.Component {
       props.disabled = 'disabled';
     }
 
+    const showValidationErrors = this.props.inlineValidation && this.props.validationMessage;
+
+    if (showValidationErrors) { inputClasses += ' invalid'; }
+
     return (
       <div style={{ ...this.props.style }} className={baseClasses}>
         <ComponentHeader {...this.props} />
@@ -452,10 +456,6 @@ class Tags extends React.Component {
 
     let baseClasses = 'SortableItem rfb-item';
     if (this.props.data.pageBreakBefore) { baseClasses += ' alwaysbreak'; }
-
-    const showValidationErrors = this.props.inlineValidation && this.props.validationMessage;
-
-    if (showValidationErrors) { inputClasses += ' invalid'; }
 
     return (
       <div style={{ ...this.props.style }} className={baseClasses}>
