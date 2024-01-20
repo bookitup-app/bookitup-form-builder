@@ -370,6 +370,7 @@ class Toolbar extends React.Component {
       static: item.static,
       required: false,
       showDescription: item.showDescription,
+      deleteForbidden: item.deleteForbidden ?? false,
     });
 
     if (this.props.showDescription === true && !item.static) {
