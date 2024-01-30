@@ -493,7 +493,7 @@ class GDPR extends React.Component {
           <ComponentLabel {...this.props} />
             <div className={classNames}>
               <input id='GDPR' name='gdpr_accepted' type='checkbox' className={inputClasses} value={true}/>
-              <label>
+              <label className="custom-control-label" htmlFor='GDPR'>
                 Ich habe die {gdprLink ? <a href={gdprLink} target="_blank">Datenschutzerklärung</a> : ' Datenschutzerklärung '} zur Kenntnis genommen. Ich stimme zu, dass meine Angaben und Daten zur Beantwortung meiner Anfrage elektronisch erhoben und gespeichert werden. Hinweis: Sie können Ihre Einwilligung jederzeit für die Zukunft per E-Mail widerrufen.
               </label>
             </div>
