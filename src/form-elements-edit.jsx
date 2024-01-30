@@ -9,7 +9,7 @@ import DynamicOptionList from './dynamic-option-list';
 import IntlMessages from './language-provider/IntlMessages';
 
 const toolbar = {
-  options: ['inline', 'textAlign', 'fontSize', 'link'],
+  options: ['inline', 'fontSize'],
   inline: {
     inDropdown: false,
     className: undefined,
