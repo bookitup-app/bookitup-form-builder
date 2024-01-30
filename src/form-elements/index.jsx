@@ -469,6 +469,42 @@ class Tags extends React.Component {
   }
 }
 
+class GDPR extends React.Component {
+  render() {
+    let classNames = 'custom-control custom-checkbox';
+    if (this.props.data.inline) { classNames += ' option-inline'; }
+
+    let baseClasses = 'SortableItem rfb-item';
+
+    let inputClasses = 'custom-control-input';
+
+    if (this.props.data.pageBreakBefore) { baseClasses += ' alwaysbreak'; }
+
+    const showValidationErrors = this.props.inlineValidation && this.props.validationMessage;
+
+    if (showValidationErrors) { inputClasses += ' invalid'; }
+
+    const gdprLink = this.props.data.gdprLink;
+
+    return (
+      <div style={{ ...this.props.style }} className={baseClasses}>
+        <ComponentHeader {...this.props} />
+        <div className="form-group">
+          <ComponentLabel {...this.props} />
+            <div className={classNames}>
+              <input id='GDPR' name='gdpr_accepted' type='checkbox' className={inputClasses} value={true}/>
+              <label>
+                Ich habe die {gdprLink ? <a href={gdprLink} target="_blank">Datenschutzerklärung</a> : ' Datenschutzerklärung '} zur Kenntnis genommen. Ich stimme zu, dass meine Angaben und Daten zur Beantwortung meiner Anfrage elektronisch erhoben und gespeichert werden. Hinweis: Sie können Ihre Einwilligung jederzeit für die Zukunft per E-Mail widerrufen.
+              </label>
+            </div>
+          {showValidationErrors &&
+                <span className='error'>{this.props.validationMessage}</span>}
+        </div>
+      </div>
+    );
+  }
+}
+
 class Checkboxes extends React.Component {
   constructor(props) {
     super(props);
@@ -1025,5 +1061,6 @@ FormElements.Camera = Camera;
 FormElements.FileUpload = FileUpload;
 FormElements.Range = Range;
 FormElements.Recaptcha = Recaptcha;
+FormElements.GDPR = GDPR;
 
 export default FormElements;

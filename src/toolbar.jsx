@@ -451,6 +451,10 @@ class Toolbar extends React.Component {
       elementOptions.col_count = item.col_count;
     }
 
+    if (item.element === 'GDPR') {
+      elementOptions.gdprLink = item.gdprLink;
+    }
+
     if (item.defaultValue) { elementOptions.defaultValue = item.defaultValue; }
 
     if (item.field_name) { elementOptions.field_name = item.field_name + ID.uuid(); }
