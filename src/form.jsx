@@ -325,7 +325,6 @@ class ReactForm extends React.Component {
         errors[item.field_name] = `${item.label} ${intl.formatMessage({ id: 'message.was-answered-incorrectly' })}!`;
       }
     });
-
     return errors;
   }
 
@@ -353,7 +352,17 @@ class ReactForm extends React.Component {
   }
 
   getContainerElement(item, Element) {
-    const controls = item.childItems.map(x => (x ? this.getInputElement(this.getDataById(x)) : <div>&nbsp;</div>));
+    const controls = item.childItems.map((x) => {
+      if (x) {
+        const childItem = this.getDataById(x);
+        let validationMessage = this.state.errors[childItem.field_name];
+        if (validationMessage && childItem.validationMessageOverride) {
+          validationMessage = childItem.validationMessageOverride;
+        }
+        return this.getInputElement(childItem, validationMessage);
+      }
+      return <div>&nbsp;</div>;
+    });
     return (<Element mutable={true} key={`form_${item.id}`} data={item} controls={controls} />);
   }
 
