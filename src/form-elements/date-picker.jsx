@@ -105,6 +105,8 @@ class DatePicker extends React.Component {
     let baseClasses = 'SortableItem rfb-item';
     if (this.props.data.pageBreakBefore) { baseClasses += ' alwaysbreak'; }
 
+    const showValidationErrors = this.props.inlineValidation && this.props.validationMessage;
+
     return (
       <div className={baseClasses} style={{ ...this.props.style }}>
         <ComponentHeader {...this.props} />
@@ -149,6 +151,7 @@ class DatePicker extends React.Component {
                 placeholderText={placeholderText}
                 />
             }
+            {showValidationErrors && <div className='error'>{this.props.validationMessage}</div>}
           </div>
         </div>
       </div>
