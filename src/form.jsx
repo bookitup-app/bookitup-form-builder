@@ -524,6 +524,7 @@ class ReactForm extends React.Component {
           {/* Hide top validation messaged display if inlineValidation */}
           {!this.props.inlineValidation && (<FormValidator emitter={this.emitter} />)}
           <div className='react-form-builder-form'>
+          {!this.state.submitOk &&
               <form encType='multipart/form-data' ref={c => this.form = c} action={this.props.form_action} onBlur={this.handleBlur} onChange={this.handleChange} onSubmit={this.handleSubmit} method={this.props.form_method}>
                 {this.props.authenticity_token &&
                   <div style={formTokenStyle}>
@@ -542,6 +543,7 @@ class ReactForm extends React.Component {
                   }
                 </div>
               </form>
+            }
             <div style={{ padding: 10 }}>
               <Banner
                 className={this.state.submitOk ? undefined : 'banner-error'}
