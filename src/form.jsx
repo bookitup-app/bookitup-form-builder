@@ -405,7 +405,7 @@ class ReactForm extends React.Component {
     const actionName = name || 'Submit';
     const { submitButton = false } = this.props;
 
-    return submitButton || <input type='submit' className='btn btn-big' value={actionName} />;
+    return submitButton || <input type='submit' disabled={this.state.attemptingSubmit} className='btn btn-big' value={actionName} />;
   }
 
   handleRenderBack = () => {
@@ -517,31 +517,31 @@ class ReactForm extends React.Component {
       setDefaultLocale(this.props.locale);
     }
 
-    const showingSubmitButton = !this.props.hide_actions && !this.state.attemptingSubmit;
+    const showingSubmitButton = !this.props.hide_actions;
 
     return (
       <div>
           {/* Hide top validation messaged display if inlineValidation */}
           {!this.props.inlineValidation && (<FormValidator emitter={this.emitter} />)}
           <div className='react-form-builder-form'>
-            <form encType='multipart/form-data' ref={c => this.form = c} action={this.props.form_action} onBlur={this.handleBlur} onChange={this.handleChange} onSubmit={this.handleSubmit} method={this.props.form_method}>
-              {this.props.authenticity_token &&
-                <div style={formTokenStyle}>
-                  <input name='utf8' type='hidden' value='&#x2713;' />
-                  <input name='authenticity_token' type='hidden' value={this.props.authenticity_token} />
-                  <input name='task_id' type='hidden' value={this.props.task_id} />
+              <form encType='multipart/form-data' ref={c => this.form = c} action={this.props.form_action} onBlur={this.handleBlur} onChange={this.handleChange} onSubmit={this.handleSubmit} method={this.props.form_method}>
+                {this.props.authenticity_token &&
+                  <div style={formTokenStyle}>
+                    <input name='utf8' type='hidden' value='&#x2713;' />
+                    <input name='authenticity_token' type='hidden' value={this.props.authenticity_token} />
+                    <input name='task_id' type='hidden' value={this.props.task_id} />
+                  </div>
+                }
+                {items}
+                <div className='btn-toolbar'>
+                  {
+                  showingSubmitButton && this.handleRenderSubmit()
+                  }
+                  {!this.props.hide_actions && this.props.back_action &&
+                    this.handleRenderBack()
+                  }
                 </div>
-              }
-              {items}
-              <div className='btn-toolbar'>
-                {
-                showingSubmitButton && this.handleRenderSubmit()
-                }
-                {!this.props.hide_actions && this.props.back_action &&
-                  this.handleRenderBack()
-                }
-              </div>
-            </form>
+              </form>
             <div style={{ padding: 10 }}>
               <Banner
                 className={this.state.submitOk ? undefined : 'banner-error'}
