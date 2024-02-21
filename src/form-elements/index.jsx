@@ -291,7 +291,7 @@ class TextArea extends React.Component {
         <ComponentHeader {...this.props} />
         <div className="form-group">
           <ComponentLabel {...this.props}/>
-          <textarea {...props} className={inputClasses}/>
+          <textarea {...props} className={inputClasses} style={{ height: 80 }}/>
           {showValidationErrors &&
                 <span className='error'>{this.props.validationMessage}</span>}
         </div>
