@@ -278,7 +278,12 @@ class ReactForm extends React.Component {
 
   validateForm() {
     const errors = {};
-    let data_items = this.props.data;
+
+    const filterOrphanItems = () => {
+      const allItemIDs = this.props.data.map(i => i.id);
+      return this.props.data.filter((i) => !(i.parentId && !allItemIDs.includes(i.parentId)))
+    }
+    let data_items = filterOrphanItems();
     const { intl } = this.props;
 
     if (this.props.display_short) {
