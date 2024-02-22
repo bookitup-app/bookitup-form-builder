@@ -86,7 +86,6 @@ class Banner extends Component {
               {this.renderImage()}
               {this.renderTitle()}
             </div>
-            <a className="float-right btn-default btn-sm" onClick={this.close.bind(this)}><i className="fas fa-check"></i></a>
           </div>
         );
       } if (this.props.children) {
@@ -95,7 +94,6 @@ class Banner extends Component {
             <div style={{ flex: 1 }}>
             {this.props.children}
             </div>
-            <a className="float-right btn-default btn-sm" onClick={this.close.bind(this)}><i className="fas fa-check"></i></a>
           </div>
         );
       }
