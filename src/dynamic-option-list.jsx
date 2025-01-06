@@ -42,6 +42,18 @@
      });
    }
 
+   trimValue(option_index, e) {
+    const this_element = this.state.element;
+    const val = (e.target.value === '') ? this._setValue(this_element.options[option_index].text) : e.target.value;
+    if (val.includes(' ')) {
+      this_element.options[option_index].value = val.trim();
+      this.setState({
+        element: this_element,
+        dirty: true,
+      });
+    }
+  }
+
    // eslint-disable-next-line no-unused-vars
    editOptionCorrect(option_index, e) {
      const this_element = this.state.element;
@@ -103,7 +115,7 @@
                      </div>
                      { this.props.canHaveOptionValue &&
                      <div className="col-sm-2">
-                       <input className="form-control" type="text" name={`value_${index}`} value={val} onChange={this.editValue.bind(this, index)} />
+                       <input className="form-control" type="text" name={`value_${index}`} value={val} onChange={this.editValue.bind(this, index)} onBlur={this.trimValue.bind(this, index)} />
                      </div> }
                      { this.props.canHaveOptionValue && this.props.canHaveOptionCorrect &&
                      <div className="col-sm-1">
