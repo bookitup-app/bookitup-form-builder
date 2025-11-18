@@ -8,8 +8,25 @@ input[type="date"] {
   width: 200px;
 }
 
+.safari select {
+  appearance: none;
+  -webkit-appearance: none; /* Safari / Chrome */
+  -moz-appearance: none;    /* Firefox (kept for completeness) */
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  padding: 0.5rem 2.5rem 0.5rem 0.75rem; /* leave space for arrow */
+  background-color: #fff;
+  background-image: url('data:image/svg+xml;charset=US-ASCII,<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"><polygon points="0,0 16,0 8,8" fill="%23666"/></svg>');
+  background-repeat: no-repeat;
+  background-position: right 0.5rem center;
+  background-size: 0.8rem;
+  font-size: 1rem;
+  color: #333;
+  cursor: pointer;
+}
+
 .invalid {
-  border:1px solid #ff0000
+  border: 1px solid #ff0000
 }
 
 .required-asterisk {
@@ -29,19 +46,30 @@ input[type="date"] {
   left: 0;
   margin: 0;
   z-index: 99999999;
+
   ul {
     width: auto;
   }
+
   .dismiss-modal-button {
     margin-top: 10px;
   }
 }
+
 .react-form-builder-form {
   position: relative;
 
-  .rfb-item.alwaysbreak { page-break-before: always; }
-  .rfb-item.nobreak:before { clear:both; }
-  .rfb-item.nobreak { page-break-inside: avoid; }
+  .rfb-item.alwaysbreak {
+    page-break-before: always;
+  }
+
+  .rfb-item.nobreak:before {
+    clear: both;
+  }
+
+  .rfb-item.nobreak {
+    page-break-inside: avoid;
+  }
 
   .rfb-item {
     padding: 5px 0;
@@ -50,6 +78,7 @@ input[type="date"] {
     img {
       max-width: 100%;
     }
+
     label {
       font-weight: normal;
     }
@@ -57,9 +86,11 @@ input[type="date"] {
     .bold {
       font-weight: bold;
     }
+
     .italic {
       font-style: italic;
     }
+
     .form-label {
       display: block !important;
     }
@@ -73,20 +104,26 @@ input[type="date"] {
       a {
         cursor: pointer;
       }
+
       input[type='date'] {
         height: 42px;
       }
+
       .m-signature-pad {
         position: relative;
         width: auto;
       }
+
       .react-star-rating {
         display: block;
       }
-      .checkbox-label, .radio-label {
+
+      .checkbox-label,
+      .radio-label {
         font-weight: normal;
         display: block;
       }
+
       .label-required {
         margin-left: 5px;
       }

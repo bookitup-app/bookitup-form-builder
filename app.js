@@ -11,6 +11,13 @@ require('./scss/application.scss');
 const url = '/api/formdata';
 const saveUrl = '/api/formdata';
 
+// Detect Safari (both macOS and iOS)
+const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
+
+if (isSafari) {
+  document.documentElement.classList.add('safari'); // add to <html>
+}
+
 const TestComponent = () => <h2>Hello</h2>;
 
 // const MyInput = React.forwardRef((props, ref) => {
