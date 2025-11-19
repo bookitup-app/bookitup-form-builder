@@ -37,6 +37,7 @@ class ReactForm extends React.Component {
     showingBanner: false,
     submitOk: undefined,
     attemptingSubmit: false,
+    trigger: Date.now(),
   };
 
   answerData;
@@ -269,6 +270,11 @@ class ReactForm extends React.Component {
 
   handleChange(event) {
     // Call submit function on change
+    const { name } = event.target;
+    if (name && name.startsWith('kind')) {
+      // Trigger re-render on event kind change to support conditional items rendering
+      this.setState((prev) => ({ ...prev, trigger: Date.now }));
+    }
     if (this.props.onChange) {
       const {onChange} = this.props;
       const data = this._collectFormData(this.props.data);
@@ -426,7 +432,12 @@ class ReactForm extends React.Component {
   }
 
   render() {
-    let data_items = this.props.data;
+    let data_items = this.props.data.filter(item => {
+      if (!item.hideForEventKinds) return true;
+      const data = this._collectFormData(this.props.data);
+      const currentKindValue = data.find((item) => item.name.startsWith('kind'));
+      return !(currentKindValue && item.hideForEventKinds.includes(currentKindValue.value));
+    })
 
     if (this.props.display_short) {
       data_items = this.props.data.filter((i) => i.alternateForm === true);

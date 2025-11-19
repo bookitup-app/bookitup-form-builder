@@ -3,8 +3,8 @@ import React from 'react';
 import TextAreaAutosize from 'react-textarea-autosize';
 import { ContentState, EditorState, convertFromHTML, convertToRaw } from 'draft-js';
 import draftToHtml from 'draftjs-to-html';
+import Select from 'react-select';
 import { Editor } from 'react-draft-wysiwyg';
-
 import DynamicOptionList from './dynamic-option-list';
 import IntlMessages from './language-provider/IntlMessages';
 
@@ -719,6 +719,66 @@ export default class FormElementsEdit extends React.Component {
             element={this.props.element}
             key={this.props.element.options.length}
           />
+        )}
+        {(!this.props.element.field_name || !this.props.element.field_name.includes('kind')) && (
+          <div className="form-group" style={{ marginTop: 30 }}>
+              <label className="control-label" htmlFor="hideForEventKinds">
+                Feld verstecken wenn Art des Events:
+              </label>
+            <Select
+              isMulti
+              options={this.props.bookitupCtx.kinds.map(kind => ({ value: kind, label: kind }))}
+              value={
+                this.props.element.hideForEventKinds
+                  ? this.props.element.hideForEventKinds.map(value => ({ value, label: value }))
+                  : []
+              }
+              className="basic-multi-select"
+              classNamePrefix="select"
+              onChange={(selectedOptions) => {
+                const values = selectedOptions ? selectedOptions.map(o => o.value) : [];
+                this.editElementProp('hideForEventKinds', 'value', { target: { value: values } });
+              }}
+              onBlur={this.updateElement.bind(this)}
+              styles={
+                this.props.bookitupCtx.theme !== 'dark'
+                  ? undefined
+                  : {
+                      control: (styles, { isFocused }) => ({
+                        ...styles,
+                        backgroundColor: '#2b2c3d',
+                        borderColor: isFocused ? '#8c8fa3' : '#666980',
+                        boxShadow: 'none',
+                        '&:hover': {
+                          borderColor: '#8c8fa3',
+                        },
+                      }),
+                      menu: (styles) => ({
+                        ...styles,
+                        backgroundColor: '#1A1B1E',
+                      }),
+                      option: (styles, { isFocused, isSelected }) => ({
+                        ...styles,
+                        backgroundColor: isSelected ? '#4A90E2' : isFocused ? '#34354a' : '#1A1B1E',
+                        color: isSelected ? '#ffffff' : '#d5d7e0',
+                        cursor: 'pointer',
+                      }),
+                      singleValue: (styles) => ({
+                        ...styles,
+                        color: '#ffffff',
+                      }),
+                      input: (styles) => ({
+                        ...styles,
+                        color: '#ffffff',
+                      }),
+                      placeholder: (styles) => ({
+                        ...styles,
+                        color: '#acaebf',
+                      }),
+                    }
+              }
+            />
+          </div>
         )}
       </div>
     );
