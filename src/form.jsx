@@ -17,6 +17,7 @@ import { TwoColumnRow, ThreeColumnRow, MultiColumnRow } from './multi-column';
 import { FieldSet } from './fieldset';
 import CustomElement from './form-elements/custom-element';
 import Registry from './stores/registry';
+import { BookitupUtils } from './utils/BookitupUtils';
 
 const {
   Image, Checkboxes, Signature, Download, Camera, FileUpload, Recaptcha,
@@ -141,7 +142,7 @@ class ReactForm extends React.Component {
 
   _isInvalid(item) {
     let invalid = false;
-    if (item.required === true) {
+    if (item.required === true && !item.hideForEventKinds) {
       const ref = this.inputs[item.field_name];
       if (item.element === 'Checkboxes' || item.element === 'RadioButtons') {
         let checked_options = 0;
@@ -270,11 +271,11 @@ class ReactForm extends React.Component {
 
   handleChange(event) {
     // Call submit function on change
-    const { name } = event.target;
-    if (name && name.startsWith('kind')) {
-      // Trigger re-render on event kind change to support conditional items rendering
-      this.setState((prev) => ({ ...prev, trigger: Date.now }));
-    }
+    // const { name } = event.target;
+    // if (name && name.startsWith('kind')) {
+    //   // Trigger re-render on event kind change to support conditional items rendering
+    //   this.setState((prev) => ({ ...prev, trigger: Date.now }));
+    // }
     if (this.props.onChange) {
       const {onChange} = this.props;
       const data = this._collectFormData(this.props.data);
@@ -287,8 +288,8 @@ class ReactForm extends React.Component {
 
     const filterOrphanItems = () => {
       const allItemIDs = this.props.data.map(i => i.id);
-      return this.props.data.filter((i) => !(i.parentId && !allItemIDs.includes(i.parentId)))
-    }
+      return this.props.data.filter((i) => !(i.parentId && !allItemIDs.includes(i.parentId)));
+    };
     let data_items = filterOrphanItems();
     const { intl } = this.props;
 
@@ -362,6 +363,7 @@ class ReactForm extends React.Component {
       defaultValue={this._getDefaultValue(item)}
       inlineValidation={this.props.inlineValidation}
       validationMessage={validationMessage}
+      // style={{ display: BookitupUtils.getDisplayProp(item, this._collectFormData(this.props.data)) }}
       />);
   }
 
@@ -432,12 +434,7 @@ class ReactForm extends React.Component {
   }
 
   render() {
-    let data_items = this.props.data.filter(item => {
-      if (!item.hideForEventKinds) return true;
-      const data = this._collectFormData(this.props.data);
-      const currentKindValue = data.find((item) => item.name.startsWith('kind'));
-      return !(currentKindValue && item.hideForEventKinds.includes(currentKindValue.value));
-    })
+    let data_items = this.props.data;
 
     if (this.props.display_short) {
       data_items = this.props.data.filter((i) => i.alternateForm === true);

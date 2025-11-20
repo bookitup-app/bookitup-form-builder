@@ -7,6 +7,7 @@ import Select from 'react-select';
 import { Editor } from 'react-draft-wysiwyg';
 import DynamicOptionList from './dynamic-option-list';
 import IntlMessages from './language-provider/IntlMessages';
+import { BookitupUtils } from './utils/BookitupUtils';
 
 const toolbar = {
   options: ['inline', 'fontSize'],
@@ -720,7 +721,7 @@ export default class FormElementsEdit extends React.Component {
             key={this.props.element.options.length}
           />
         )}
-        {(!this.props.element.field_name || !this.props.element.field_name.includes('kind')) && (
+        {BookitupUtils.isConditionalHiddingPossible(this.props.element) && (
           <div className="form-group" style={{ marginTop: 30 }}>
               <label className="control-label" htmlFor="hideForEventKinds">
                 Feld verstecken wenn Art des Events:
