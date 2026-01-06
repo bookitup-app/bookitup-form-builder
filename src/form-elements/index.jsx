@@ -108,6 +108,12 @@ class TextInput extends React.Component {
     if (this.props.read_only) {
       props.disabled = 'disabled';
     }
+    if (this.props.data.usePlaceholderAsLabel) {
+      props.placeholder = this.props.data.label;
+      if (this.props.data.required) {
+        props.placeholder += ' *';
+      }
+    }
 
     const showValidationErrors = this.props.inlineValidation && this.props.validationMessage;
 
@@ -193,6 +199,13 @@ class PhoneNumber extends React.Component {
 
     if (this.props.read_only) {
       props.disabled = 'disabled';
+    }
+
+    if (this.props.data.usePlaceholderAsLabel) {
+      props.placeholder = this.props.data.label;
+      if (this.props.data.required) {
+        props.placeholder += ' *';
+      }
     }
 
     const showValidationErrors = this.props.inlineValidation && this.props.validationMessage;
@@ -285,6 +298,13 @@ class TextArea extends React.Component {
     if (showValidationErrors) { inputClasses += ' invalid'; }
 
     if (this.props.data.pageBreakBefore) { baseClasses += ' alwaysbreak'; }
+
+    if (this.props.data.usePlaceholderAsLabel) {
+      props.placeholder = this.props.data.label;
+      if (this.props.data.required) {
+        props.placeholder += ' *';
+      }
+    }
 
     return (
       <div style={{ ...this.props.style }} className={baseClasses}>
