@@ -561,6 +561,42 @@ class AGB extends React.Component {
   }
 }
 
+class Newsletter extends React.Component {
+  render() {
+    let classNames = 'custom-control custom-checkbox';
+    if (this.props.data.inline) { classNames += ' option-inline'; }
+
+    let baseClasses = 'SortableItem rfb-item';
+
+    let inputClasses = 'custom-control-input';
+
+    if (this.props.data.pageBreakBefore) { baseClasses += ' alwaysbreak'; }
+
+    const showValidationErrors = this.props.inlineValidation && this.props.validationMessage;
+
+    if (showValidationErrors) { inputClasses += ' invalid'; }
+
+    const newsletterText = this.props.data.newsletterText;
+
+    return (
+      <div style={{ ...this.props.style }} className={baseClasses}>
+        <ComponentHeader {...this.props} />
+        <div className="form-group">
+          <ComponentLabel {...this.props} />
+            <div className={classNames}>
+              <input id='contact-form-newsletter' name='newsletter_accepted' type='checkbox' className={inputClasses} value="accepted" />
+              <label className="custom-control-label" htmlFor='contact-form-newsletter'>
+                {newsletterText}
+              </label>
+            </div>
+          {showValidationErrors &&
+                <span className='error'>{this.props.validationMessage}</span>}
+        </div>
+      </div>
+    );
+  }
+}
+
 class Checkboxes extends React.Component {
   constructor(props) {
     super(props);
@@ -1119,5 +1155,6 @@ FormElements.Range = Range;
 FormElements.Recaptcha = Recaptcha;
 FormElements.GDPR = GDPR;
 FormElements.AGB = AGB;
+FormElements.Newsletter = Newsletter;
 
 export default FormElements;

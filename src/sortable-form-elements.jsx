@@ -7,7 +7,7 @@ import CustomElement from './form-elements/custom-element';
 
 const {
   Header, Paragraph, Label, LineBreak, TextInput, EmailInput, PhoneNumber, NumberInput, TextArea, Dropdown, Checkboxes,
-  DatePicker, RadioButtons, Image, Rating, Tags, Signature, HyperLink, Download, Camera, Range, FileUpload, Recaptcha, GDPR, AGB
+  DatePicker, RadioButtons, Image, Rating, Tags, Signature, HyperLink, Download, Camera, Range, FileUpload, Recaptcha, GDPR, AGB, Newsletter,
 } = BaseFormElements;
 
 const FormElements = {};
@@ -43,5 +43,6 @@ FormElements.CustomElement = SortableElement(CustomElement);
 FormElements.Recaptcha = SortableElement(Recaptcha);
 FormElements.GDPR = SortableElement(GDPR);
 FormElements.AGB = SortableElement(AGB);
+FormElements.Newsletter = SortableElement(Newsletter);
 
 export default FormElements;

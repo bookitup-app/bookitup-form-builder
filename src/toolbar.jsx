@@ -367,6 +367,15 @@ class Toolbar extends React.Component {
         required: true,
         agbLink: '',
       },
+      {
+        key: 'Newsletter',
+        element: 'Newsletter',
+        field_name: 'newsletter',
+        name: 'Newsletter',
+        icon: 'fa fa-newspaper',
+        label: 'Newsletter',
+        newsletterText: 'Ich möchte den Newsletter erhalten. Ich kann meine Einwilligung jederzeit widerrufen.',
+      },
     ];
   }
 
@@ -479,6 +488,10 @@ class Toolbar extends React.Component {
 
     if (item.element === 'AGB') {
       elementOptions.agbLink = item.agbLink;
+    }
+
+    if (item.element === 'Newsletter') {
+      elementOptions.newsletterText = item.newsletterText;
     }
 
     if (item.defaultValue) { elementOptions.defaultValue = item.defaultValue; }

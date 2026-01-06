@@ -727,6 +727,24 @@ export default class FormElementsEdit extends React.Component {
             </div>
           </div>
         )}
+        {this.props.element.element === 'Newsletter' && (
+          <div>
+            <br/>
+            <div className="form-group">
+              <label className="control-label" htmlFor="newsletterText">
+                Newsletter‑Einwilligungstext
+              </label>
+              <input
+                id="newsletterText"
+                type="text"
+                className="form-control"
+                defaultValue={this.props.element.newsletterText}
+                onBlur={this.updateElement.bind(this)}
+                onChange={this.editElementProp.bind(this, 'newsletterText', 'value')}
+              />
+            </div>
+          </div>
+        )}
         {this.props.element.hasOwnProperty('agbLink') && (
           <div>
             <br/>
