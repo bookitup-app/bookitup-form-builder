@@ -159,6 +159,9 @@ class ReactForm extends React.Component {
       } else if (item.element === 'GDPR') {
         const inputRef = document.getElementById('contact-form-GDPR');
         invalid = !inputRef.checked;
+      } else if (item.element === 'AGB') {
+        const inputRef = document.getElementById('contact-form-AGB');
+        invalid = !inputRef.checked;
       } else {
         const $item = this._getItemValue(item, ref);
         if (item.element === 'Rating') {
@@ -467,6 +470,7 @@ class ReactForm extends React.Component {
         case 'Tags':
         case 'Range':
         case 'GDPR':
+        case 'AGB':
           return this.getInputElement(item, validationMessage);
         case 'CustomElement':
           return this.getCustomElement(item);

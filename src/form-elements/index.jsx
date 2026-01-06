@@ -525,6 +525,42 @@ class GDPR extends React.Component {
   }
 }
 
+class AGB extends React.Component {
+  render() {
+    let classNames = 'custom-control custom-checkbox';
+    if (this.props.data.inline) { classNames += ' option-inline'; }
+
+    let baseClasses = 'SortableItem rfb-item';
+
+    let inputClasses = 'custom-control-input';
+
+    if (this.props.data.pageBreakBefore) { baseClasses += ' alwaysbreak'; }
+
+    const showValidationErrors = this.props.inlineValidation && this.props.validationMessage;
+
+    if (showValidationErrors) { inputClasses += ' invalid'; }
+
+    const agbLink = this.props.data.agbLink;
+
+    return (
+      <div style={{ ...this.props.style }} className={baseClasses}>
+        <ComponentHeader {...this.props} />
+        <div className="form-group">
+          <ComponentLabel {...this.props} />
+            <div className={classNames}>
+              <input id='contact-form-AGB' name='agb_accepted' type='checkbox' className={inputClasses} value="accepted" />
+              <label className="custom-control-label" htmlFor='contact-form-AGB'>
+                Ich habe die {agbLink ? <a href={agbLink} target="_blank">Allgemeinen Geschäftsbedingungen (AGB)</a> : ' Allgemeinen Geschäftsbedingungen (AGB) '}  gelesen und akzeptiere sie.
+              </label>
+            </div>
+          {showValidationErrors &&
+                <span className='error'>{this.props.validationMessage}</span>}
+        </div>
+      </div>
+    );
+  }
+}
+
 class Checkboxes extends React.Component {
   constructor(props) {
     super(props);
@@ -1082,5 +1118,6 @@ FormElements.FileUpload = FileUpload;
 FormElements.Range = Range;
 FormElements.Recaptcha = Recaptcha;
 FormElements.GDPR = GDPR;
+FormElements.AGB = AGB;
 
 export default FormElements;

@@ -345,6 +345,28 @@ class Toolbar extends React.Component {
         field_name: 'recaptcha_',
         required: true,
       },
+      {
+        key: 'GdprNotice',
+        element: 'GDPR',
+        field_name: 'gdpr_notice',
+        name: 'Datenschutz',
+        icon: 'fa fa-shield',
+        label: 'Datenschutz',
+        validationMessageOverride: 'Bitte akzeptiere den Datenschutz!',
+        required: true,
+        gdprLink: '',
+      },
+      {
+        key: 'Agb',
+        element: 'AGB',
+        field_name: 'agb',
+        name: 'AGB',
+        icon: 'fa fa-file-contract',
+        label: 'AGB',
+        validationMessageOverride: 'Bitte akzeptiere den AGB!',
+        required: true,
+        agbLink: '',
+      },
     ];
   }
 
@@ -453,6 +475,10 @@ class Toolbar extends React.Component {
 
     if (item.element === 'GDPR') {
       elementOptions.gdprLink = item.gdprLink;
+    }
+
+    if (item.element === 'AGB') {
+      elementOptions.agbLink = item.agbLink;
     }
 
     if (item.defaultValue) { elementOptions.defaultValue = item.defaultValue; }

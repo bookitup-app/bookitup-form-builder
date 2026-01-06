@@ -727,6 +727,24 @@ export default class FormElementsEdit extends React.Component {
             </div>
           </div>
         )}
+        {this.props.element.hasOwnProperty('agbLink') && (
+          <div>
+            <br/>
+            <div className="form-group">
+              <label className="control-label" htmlFor="agbLinkInput">
+                AGB link:
+              </label>
+              <input
+                id="agbLinkInput"
+                type="text"
+                className="form-control"
+                defaultValue={this.props.element.gdprLink}
+                onBlur={this.updateElement.bind(this)}
+                onChange={this.editElementProp.bind(this, 'agbLink', 'value')}
+              />
+            </div>
+          </div>
+        )}
         {this.props.element.hasOwnProperty('options') && (
           <DynamicOptionList
             showCorrectColumn={this.props.showCorrectColumn}
