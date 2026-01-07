@@ -145,8 +145,7 @@ export default class FormElementsEdit extends React.Component {
     } = this.props.element;
     const canHaveImageSize = this.state.element.element === 'Image' || this.state.element.element === 'Camera';
 
-    const this_usePlaceholderAsLabel = this.props.element.hasOwnProperty('usePlaceholderAsLabel') ? this.props.element.usePlaceholderAsLabel : false;
-    const placeholderLabelSupported = ['TextInput', 'TextArea', 'PhoneNumber'].includes(this.state.element.element);
+    const placeholderLabelSupported = ['TextInput', 'TextArea', 'PhoneNumber', 'EmailInput'].includes(this.state.element.element);
 
     const this_files = this.props.files.length ? this.props.files : [];
     if (this_files.length < 1 || (this_files.length > 0 && this_files[0].id !== '')) {
@@ -228,7 +227,24 @@ export default class FormElementsEdit extends React.Component {
               onEditorStateChange={this.onEditorStateChange.bind(this, 0, 'label')}
               stripPastedStyles
             />
-            <br />
+            {placeholderLabelSupported && (
+              <div>
+                <br/>
+                <div className="form-group">
+                  <label className="control-label" htmlFor="placeholderTextInput">
+                    Platzhaltertext
+                  </label>
+                  <input
+                    id="placeholderTextInput"
+                    type="text"
+                    className="form-control"
+                    defaultValue={this.props.element.placeholderText}
+                    onBlur={this.updateElement.bind(this)}
+                    onChange={this.editElementProp.bind(this, 'placeholderText', 'value')}
+                  />
+                </div>
+              </div>
+            )}
             <div className="custom-control custom-checkbox">
               <input
                 id="is-required"
@@ -242,21 +258,6 @@ export default class FormElementsEdit extends React.Component {
                 <IntlMessages id="required" />
               </label>
             </div>
-            {placeholderLabelSupported && (
-              <div className="custom-control custom-checkbox">
-                <input
-                  id="placeholder-as-label"
-                  className="custom-control-input"
-                  type="checkbox"
-                  checked={this_usePlaceholderAsLabel}
-                  value
-                  onChange={this.editElementProp.bind(this, 'usePlaceholderAsLabel', 'checked')}
-                />
-                <label className="custom-control-label" htmlFor="placeholder-as-label">
-                  Label im Eingabefeld anzeigen
-                </label>
-              </div>
-            )}
             {/* {this.props.element.hasOwnProperty('readOnly') && (
               <div className="custom-control custom-checkbox">
                 <input
