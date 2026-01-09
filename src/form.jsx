@@ -277,11 +277,11 @@ class ReactForm extends React.Component {
 
   handleChange(event) {
     // Call submit function on change
-    // const { name } = event.target;
-    // if (name && name.startsWith('kind')) {
-    //   // Trigger re-render on event kind change to support conditional items rendering
-    //   this.setState((prev) => ({ ...prev, trigger: Date.now }));
-    // }
+    const { name } = event.target;
+    if (name && name.startsWith('kind')) {
+      // Trigger re-render on event kind change to support conditional items rendering
+      this.setState((prev) => ({ ...prev, trigger: Date.now }));
+    }
     if (this.props.onChange) {
       const {onChange} = this.props;
       const data = this._collectFormData(this.props.data);
@@ -369,7 +369,7 @@ class ReactForm extends React.Component {
       defaultValue={this._getDefaultValue(item)}
       inlineValidation={this.props.inlineValidation}
       validationMessage={validationMessage}
-      // style={{ display: BookitupUtils.getDisplayProp(item, this._collectFormData(this.props.data)) }}
+      style={{ display: BookitupUtils.getDisplayProp(item, this._collectFormData(this.props.data)) }}
       />);
   }
 

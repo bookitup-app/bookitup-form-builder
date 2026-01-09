@@ -349,7 +349,10 @@ class Dropdown extends React.Component {
         <ComponentHeader {...this.props} />
         <div className="form-group">
           <ComponentLabel {...this.props} />
-          <select {...props} className={inputClasses}>
+          <select {...props} className={inputClasses} >
+              <option value="" selected>
+                Bitte auswählen…
+              </option>
             {this.props.data.options.map((option) => {
               const this_key = `preview_${option.key}`;
               return <option value={option.value ?? option.text} key={this_key}>{option.text}</option>;

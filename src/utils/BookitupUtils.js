@@ -15,25 +15,22 @@ const SUPPORTED_HIDE_ELEMENTS = [
 ];
 
 const isConditionalHiddingPossible = (el) => {
-  // Disable for now
-  return false;
-  // const { field_name, element } = el;
-  // if (field_name && field_name.startsWith('customer.emailAddress')) {
-  //   // Always reqired field
-  //   return false;
-  // }
-  // if (field_name && field_name.startsWith("kind")) {
-  //   // Dont show for event kind selection
-  //   return false;
-  // }
-
-  // return SUPPORTED_HIDE_ELEMENTS.includes(element);
+  const { field_name, element } = el;
+  if (field_name && (field_name.startsWith('customer.emailAddress') || field_name.startsWith('Datum'))) {
+    // Always reqired fields
+    return false;
+  }
+  if (field_name && (field_name.startsWith('kind'))) {
+    // Dont show for event kind selection
+    return false;
+  }
+  return SUPPORTED_HIDE_ELEMENTS.includes(element);
 };
 
-const getDisplayProp = (item, resolveData) => {
+const getDisplayProp = (item, data) => {
   let display;
   if (item.hideForEventKinds) {
-    const currentKindValue = resolveData().find((i) => i.name.startsWith("kind"));
+    const currentKindValue = data.find((i) => i.name.startsWith("kind"));
     if (
       currentKindValue &&
       item.hideForEventKinds.includes(currentKindValue.value)
