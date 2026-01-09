@@ -149,6 +149,7 @@ class DatePicker extends React.Component {
                 portalId="root-portal"
                 autoComplete="off"
                 placeholderText={placeholderText}
+                minDate={props.name && props.name.startsWith('date') ? new Date() : undefined}
                 />
             }
             {showValidationErrors && <div className='error'>{this.props.validationMessage}</div>}
