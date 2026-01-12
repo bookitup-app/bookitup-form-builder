@@ -16,7 +16,7 @@ const SUPPORTED_HIDE_ELEMENTS = [
 
 const isConditionalHiddingPossible = (el) => {
   const { field_name, element } = el;
-  if (field_name && (field_name.startsWith('customer.emailAddress') || field_name.startsWith('Datum'))) {
+  if (field_name && (field_name.startsWith('customer.emailAddress'))) {
     // Always reqired fields
     return false;
   }
