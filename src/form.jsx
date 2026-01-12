@@ -46,6 +46,7 @@ class ReactForm extends React.Component {
   constructor(props) {
     super(props);
     this.answerData = this._convert(props.answer_data);
+    this.requestParams = this._getRequestParams();
     this.emitter = new EventEmitter();
     this.getDataById = this.getDataById.bind(this);
 
@@ -70,8 +71,31 @@ class ReactForm extends React.Component {
     return answers || {};
   }
 
+  _getRequestParams() {
+    const params = new URLSearchParams(window.location.search);
+    const result = {};
+    // eslint-disable-next-line no-restricted-syntax
+    for (const [key, value] of params.entries()) {
+      result[key] = value;
+    }
+    return result;
+  }
+
   _getDefaultValue(item) {
-    return this.answerData[item.field_name];
+    const fieldName = item.field_name;
+    // 1️⃣ Explicit stored answer always wins
+    if (this.answerData?.[fieldName] !== undefined) {
+      return this.answerData[fieldName];
+    }
+    // 2️⃣ Try to prefill from request params
+    if (this.requestParams && typeof fieldName === 'string') {
+      const matchedKey = Object.keys(this.requestParams).find((param) => fieldName === param || fieldName.includes(param));
+      if (matchedKey) {
+        return this.requestParams[matchedKey];
+      }
+    }
+    // 3️⃣ No default
+    return undefined;
   }
 
   _optionsDefaultValue(item) {
