@@ -538,8 +538,6 @@ class AGB extends React.Component {
 
     if (showValidationErrors) { inputClasses += ' invalid'; }
 
-    const agbLink = this.props.data.agbLink;
-
     return (
       <div style={{ ...this.props.style }} className={baseClasses}>
         <ComponentHeader {...this.props} />
@@ -547,9 +545,7 @@ class AGB extends React.Component {
           <ComponentLabel {...this.props} />
             <div className={classNames}>
               <input id='contact-form-AGB' name='agb_accepted' type='checkbox' className={inputClasses} value="accepted" />
-              <label className="custom-control-label" htmlFor='contact-form-AGB'>
-                Ich habe die {agbLink ? <a href={agbLink} target="_blank">Allgemeinen Geschäftsbedingungen (AGB)</a> : ' Allgemeinen Geschäftsbedingungen (AGB) '}  gelesen und akzeptiere sie.
-              </label>
+              <label className="custom-control-label" htmlFor='contact-form-AGB' dangerouslySetInnerHTML={{ __html: this.props.data.statement }} />
             </div>
           {showValidationErrors &&
                 <span className='error'>{this.props.validationMessage}</span>}
@@ -574,8 +570,6 @@ class Newsletter extends React.Component {
 
     if (showValidationErrors) { inputClasses += ' invalid'; }
 
-    const newsletterText = this.props.data.newsletterText;
-
     return (
       <div style={{ ...this.props.style }} className={baseClasses}>
         <ComponentHeader {...this.props} />
@@ -583,9 +577,7 @@ class Newsletter extends React.Component {
           <ComponentLabel {...this.props} />
             <div className={classNames}>
               <input id='contact-form-newsletter' name='newsletter_accepted' type='checkbox' className={inputClasses} value="accepted" />
-              <label className="custom-control-label" htmlFor='contact-form-newsletter'>
-                {newsletterText}
-              </label>
+              <label className="custom-control-label" htmlFor='contact-form-newsletter' dangerouslySetInnerHTML={{ __html: this.props.data.statement }} />
             </div>
           {showValidationErrors &&
                 <span className='error'>{this.props.validationMessage}</span>}

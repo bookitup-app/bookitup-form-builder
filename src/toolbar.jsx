@@ -123,6 +123,19 @@ class Toolbar extends React.Component {
       {
         key: 'Dropdown',
         canHaveAnswer: true,
+        name: 'kind',
+        icon: 'far fa-caret-square-down',
+        label: intl.formatMessage({ id: 'place-holder-label' }),
+        field_name: 'kind',
+        options: [{
+          key: 'Hochzeit',
+          value: 'Hochzeit',
+          text: 'Hochzeit',
+        }],
+      },
+      {
+        key: 'Dropdown_EventKind',
+        canHaveAnswer: true,
         name: intl.formatMessage({ id: 'dropdown' }),
         icon: 'far fa-caret-square-down',
         label: intl.formatMessage({ id: 'place-holder-label' }),
@@ -365,7 +378,7 @@ class Toolbar extends React.Component {
         label: 'AGB',
         validationMessageOverride: 'Bitte akzeptiere den AGB!',
         required: true,
-        agbLink: '',
+        statement: 'Ich habe die Allgemeinen Geschäftsbedingungen (AGB) gelesen und akzeptiere sie.',
       },
       {
         key: 'Newsletter',
@@ -374,7 +387,7 @@ class Toolbar extends React.Component {
         name: 'Newsletter',
         icon: 'fa fa-newspaper',
         label: 'Newsletter',
-        newsletterText: 'Ich möchte den Newsletter erhalten. Ich kann meine Einwilligung jederzeit widerrufen.',
+        statement: 'Ich möchte den Newsletter erhalten. Ich kann meine Einwilligung jederzeit widerrufen.',
       },
     ];
   }
@@ -499,6 +512,8 @@ class Toolbar extends React.Component {
     if (item.field_name) { elementOptions.field_name = item.field_name + ID.uuid(); }
 
     if (item.label) { elementOptions.label = item.label; }
+
+    if (item.statement) { elementOptions.statement = item.statement; }
 
     if (item.options) {
       if (item.options.length > 0) {

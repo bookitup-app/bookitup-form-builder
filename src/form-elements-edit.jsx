@@ -18,6 +18,21 @@ const toolbar = {
   },
 };
 
+const toolbarWithLink = {
+  options: ['inline', 'fontSize', 'link'],
+  inline: {
+    inDropdown: false,
+    options: ['bold', 'italic', 'underline'],
+  },
+  link: {
+    inDropdown: false,
+    showOpenOptionOnHover: true,
+    defaultTargetOption: '_blank',
+    options: ['link', 'unlink'],
+    linkCallback: undefined, // optional
+  },
+};
+
 export default class FormElementsEdit extends React.Component {
   constructor(props) {
     super(props);
@@ -153,11 +168,15 @@ export default class FormElementsEdit extends React.Component {
     }
 
     let editorState;
+    let statementEditorState;
     if (this.props.element.hasOwnProperty('content')) {
       editorState = this.convertFromHTML(this.props.element.content);
     }
     if (this.props.element.hasOwnProperty('label')) {
       editorState = this.convertFromHTML(this.props.element.label);
+    }
+    if (this.props.element.hasOwnProperty('statement')) {
+      statementEditorState = this.convertFromHTML(this.props.element.statement);
     }
 
     return (
@@ -728,38 +747,19 @@ export default class FormElementsEdit extends React.Component {
             </div>
           </div>
         )}
-        {this.props.element.element === 'Newsletter' && (
+        {this.props.element.hasOwnProperty('statement') && (
           <div>
             <br/>
             <div className="form-group">
-              <label className="control-label" htmlFor="newsletterText">
-                Newsletter‑Einwilligungstext
+              <label className="control-label" htmlFor="statement">
+                Stellungnahme
               </label>
-              <input
-                id="newsletterText"
-                type="text"
-                className="form-control"
-                defaultValue={this.props.element.newsletterText}
+              <Editor
+                toolbar={toolbarWithLink}
+                defaultEditorState={statementEditorState}
                 onBlur={this.updateElement.bind(this)}
-                onChange={this.editElementProp.bind(this, 'newsletterText', 'value')}
-              />
-            </div>
-          </div>
-        )}
-        {this.props.element.hasOwnProperty('agbLink') && (
-          <div>
-            <br/>
-            <div className="form-group">
-              <label className="control-label" htmlFor="agbLinkInput">
-                AGB link:
-              </label>
-              <input
-                id="agbLinkInput"
-                type="text"
-                className="form-control"
-                defaultValue={this.props.element.gdprLink}
-                onBlur={this.updateElement.bind(this)}
-                onChange={this.editElementProp.bind(this, 'agbLink', 'value')}
+                onEditorStateChange={this.onEditorStateChange.bind(this, 0, 'statement')}
+                stripPastedStyles
               />
             </div>
           </div>
