@@ -368,6 +368,7 @@ class Toolbar extends React.Component {
         validationMessageOverride: 'Bitte akzeptiere den Datenschutz!',
         required: true,
         gdprLink: '',
+        statement: 'Ich habe die Datenschutzerklärung zur Kenntnis genommen. Ich stimme zu, dass meine Angaben und Daten zur Beantwortung meiner Anfrage elektronisch erhoben und gespeichert werden. Hinweis: Die Einwilligung kann jederzeit per E-Mail widerrufen werden.',
       },
       {
         key: 'Agb',

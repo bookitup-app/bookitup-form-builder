@@ -502,7 +502,7 @@ class GDPR extends React.Component {
 
     if (showValidationErrors) { inputClasses += ' invalid'; }
 
-    const gdprLink = this.props.data.gdprLink;
+    const { gdprLink, statement } = this.props.data;
 
     return (
       <div style={{ ...this.props.style }} className={baseClasses}>
@@ -511,9 +511,14 @@ class GDPR extends React.Component {
           <ComponentLabel {...this.props} />
             <div className={classNames}>
               <input id='contact-form-GDPR' name='gdpr_accepted' type='checkbox' className={inputClasses} value="accepted" />
-              <label className="custom-control-label" htmlFor='contact-form-GDPR'>
-                Ich habe die {gdprLink ? <a href={gdprLink} target="_blank">Datenschutzerklärung</a> : ' Datenschutzerklärung '} zur Kenntnis genommen. Ich stimme zu, dass meine Angaben und Daten zur Beantwortung meiner Anfrage elektronisch erhoben und gespeichert werden. Hinweis: Die Einwilligung kann jederzeit per E-Mail widerrufen werden.
-              </label>
+              {/* Old version w/o RTE */}
+              {!statement &&
+                <label className="custom-control-label" htmlFor='contact-form-GDPR'>
+                  Ich habe die {gdprLink ? <a href={gdprLink} target="_blank">Datenschutzerklärung</a> : ' Datenschutzerklärung '} zur Kenntnis genommen. Ich stimme zu, dass meine Angaben und Daten zur Beantwortung meiner Anfrage elektronisch erhoben und gespeichert werden. Hinweis: Die Einwilligung kann jederzeit per E-Mail widerrufen werden.
+                </label>
+              }
+              {/* New version with RTE */}
+              {statement && <label className="custom-control-label" htmlFor='contact-form-GDPR' dangerouslySetInnerHTML={{ __html: statement }} />}
             </div>
           {showValidationErrors &&
                 <span className='error'>{this.props.validationMessage}</span>}

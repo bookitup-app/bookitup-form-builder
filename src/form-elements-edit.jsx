@@ -729,7 +729,7 @@ export default class FormElementsEdit extends React.Component {
             </div>
           </div>
         )}
-        {this.props.element.hasOwnProperty('gdprLink') && (
+        {this.props.element.hasOwnProperty('gdprLink') && !this.props.element.hasOwnProperty('statement') && (
           <div>
             <br/>
             <div className="form-group">
