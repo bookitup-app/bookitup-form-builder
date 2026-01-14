@@ -33,13 +33,12 @@ const isConditionalHiddingPossible = (el) => {
 };
 
 const getDisplayProp = (item, data) => {
-  let display = 'none';
+  let display = "none";
   if (item.fieldOfInterest && item.valuesOfInterest) {
     const fieldRef = data.find((i) => i.name === item.fieldOfInterest.value);
     if (fieldRef) {
       const { value } = fieldRef;
-      console.log(value, item.valuesOfInterest);
-      if (item.valuesOfInterest.map(v => v.value).includes(value)) {
+      if (item.valuesOfInterest.map((v) => v.value).includes(value)) {
         display = undefined;
       }
     }
@@ -53,8 +52,12 @@ const filterObservableElements = (elements, curr) =>
       OBERVABLE_ELEMENTS.includes(e.element) && e.field_name !== curr.field_name
   );
 
+const showRequiredCheckbox = (el) =>
+  !["Recaptcha", "AGB", "GDPR"].includes(el.element);
+
 export const BookitupUtils = {
   isConditionalHiddingPossible,
   getDisplayProp,
   filterObservableElements,
+  showRequiredCheckbox,
 };

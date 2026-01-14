@@ -381,6 +381,13 @@ class Toolbar extends React.Component {
         label: 'Newsletter',
         statement: 'Ich möchte den Newsletter erhalten. Ich kann meine Einwilligung jederzeit widerrufen.',
       },
+      {
+        key: 'Recaptcha',
+        field_name: 'recaptcha',
+        label: 'Recaptcha',
+        name: 'Recaptcha',
+        sitekey: '',
+      },
     ];
   }
 

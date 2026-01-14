@@ -47,7 +47,6 @@ class Recaptcha extends React.Component {
           <div className={baseClasses} style={{ ...this.props.style }}>
             <ComponentHeader {...this.props} />
             <div className="form-group">
-              <ComponentLabel {...this.props} />
               <div>
                 {!this.props.data.sitekey && <span className='error'>Bitte geben Sie den Site-Key ein.</span>}
               <Reaptcha sitekey={this.props.data.sitekey} onVerify={this.onVerify} onLoad={this.onLoad}/>
