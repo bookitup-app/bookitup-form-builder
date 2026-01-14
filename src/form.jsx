@@ -208,6 +208,8 @@ class ReactForm extends React.Component {
       id: item.id,
       name: item.field_name,
       custom_name: item.custom_name || item.field_name,
+      fieldOfInterest: item.fieldOfInterest ? item.fieldOfInterest.value : undefined,
+      valuesOfInterest: item.valuesOfInterest && item.valuesOfInterest.length > 0 ? item.valuesOfInterest.map(v => v.value) : undefined,
     };
     if (!itemData.name) return null;
     const ref = this.inputs[item.field_name];
@@ -300,12 +302,9 @@ class ReactForm extends React.Component {
   }
 
   handleChange(event) {
-    // Call submit function on change
-    const { name } = event.target;
-    if (name && name.startsWith('kind')) {
-      // Trigger re-render on event kind change to support conditional items rendering
-      this.setState((prev) => ({ ...prev, trigger: Date.now }));
-    }
+    // Trigger re-render to support conditional items rendering
+    this.setState((prev) => ({ ...prev, trigger: Date.now }));
+
     if (this.props.onChange) {
       const {onChange} = this.props;
       const data = this._collectFormData(this.props.data);
@@ -382,6 +381,7 @@ class ReactForm extends React.Component {
     if (item.custom) {
       return this.getCustomElement(item);
     }
+    const conditionalRenderingApplied = item.fieldOfInterest && item.valuesOfInterest && item.valuesOfInterest.length > 0;
     const Input = FormElements[item.element];
     return (<Input
       handleChange={this.handleChange}
@@ -393,7 +393,7 @@ class ReactForm extends React.Component {
       defaultValue={this._getDefaultValue(item)}
       inlineValidation={this.props.inlineValidation}
       validationMessage={validationMessage}
-      style={{ display: BookitupUtils.getDisplayProp(item, this._collectFormData(this.props.data)) }}
+      style={{ display: conditionalRenderingApplied ? BookitupUtils.getDisplayProp(item, this._collectFormData(this.props.data)) : undefined }}
       />);
   }
 
@@ -409,7 +409,8 @@ class ReactForm extends React.Component {
       }
       return <div>&nbsp;</div>;
     });
-    return (<Element mutable={true} key={`form_${item.id}`} data={item} controls={controls} />);
+    const conditionalRenderingApplied = item.fieldOfInterest && item.valuesOfInterest && item.valuesOfInterest.length > 0;
+    return (<Element mutable={true} key={`form_${item.id}`} data={item} controls={controls} style={{ display: conditionalRenderingApplied ? BookitupUtils.getDisplayProp(item, this._collectFormData(this.props.data)) : undefined }}/>);
   }
 
   getSimpleElement(item) {

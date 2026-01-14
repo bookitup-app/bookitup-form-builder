@@ -123,7 +123,7 @@ class Toolbar extends React.Component {
       {
         key: 'Dropdown',
         canHaveAnswer: true,
-        name: 'kind',
+        name: intl.formatMessage({ id: 'dropdown' }),
         icon: 'far fa-caret-square-down',
         label: intl.formatMessage({ id: 'place-holder-label' }),
         field_name: 'kind',
@@ -132,15 +132,6 @@ class Toolbar extends React.Component {
           value: 'Hochzeit',
           text: 'Hochzeit',
         }],
-      },
-      {
-        key: 'Dropdown_EventKind',
-        canHaveAnswer: true,
-        name: intl.formatMessage({ id: 'dropdown' }),
-        icon: 'far fa-caret-square-down',
-        label: intl.formatMessage({ id: 'place-holder-label' }),
-        field_name: 'dropdown_',
-        options: [],
       },
       {
         key: 'Tags',
@@ -409,6 +400,7 @@ class Toolbar extends React.Component {
     const elementKey = item.element || item.key;
     const elementOptions = this.addCustomOptions(item, {
       id: ID.uuid(),
+      key: item.key,
       element: elementKey,
       text: item.name,
       group_name: item.group_name,

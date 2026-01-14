@@ -4,6 +4,7 @@ import TextAreaAutosize from 'react-textarea-autosize';
 import { ContentState, EditorState, convertFromHTML, convertToRaw } from 'draft-js';
 import draftToHtml from 'draftjs-to-html';
 import Select from 'react-select';
+import CreatableSelect from 'react-select/creatable';
 import { Editor } from 'react-draft-wysiwyg';
 import DynamicOptionList from './dynamic-option-list';
 import IntlMessages from './language-provider/IntlMessages';
@@ -777,23 +778,22 @@ export default class FormElementsEdit extends React.Component {
           />
         )}
         {BookitupUtils.isConditionalHiddingPossible(this.props.element) && (
-          <div className="form-group" style={{ marginTop: 30 }}>
+          <>
+          <br />
+          <h5>Bedingte Sichtbarkeit</h5>
+          <p>Legen Sie fest, wann dieses Feld basierend auf dem Wert eines anderen Feldes angezeigt wird.</p>
+          <br />
+          <div className="form-group">
               <label className="control-label" htmlFor="hideForEventKinds">
-                Feld verstecken wenn Art des Events:
+                Abhängiges Feld
               </label>
             <Select
-              isMulti
-              options={this.props.bookitupCtx.kinds.map(kind => ({ value: kind, label: kind }))}
-              value={
-                this.props.element.hideForEventKinds
-                  ? this.props.element.hideForEventKinds.map(value => ({ value, label: value }))
-                  : []
-              }
+              options={BookitupUtils.filterObservableElements(this.props.allFields, this.props.element).map(el => ({ value: el.field_name, label: el.key ?? el.field_name }))}
+              value={this.props.element.fieldOfInterest}
               className="basic-multi-select"
               classNamePrefix="select"
               onChange={(selectedOptions) => {
-                const values = selectedOptions ? selectedOptions.map(o => o.value) : [];
-                this.editElementProp('hideForEventKinds', 'value', { target: { value: values } });
+                this.editElementProp('fieldOfInterest', 'value', { target: { value: selectedOptions } });
               }}
               onBlur={this.updateElement.bind(this)}
               styles={
@@ -834,7 +834,68 @@ export default class FormElementsEdit extends React.Component {
                     }
               }
             />
+            {
+              this.props.element.fieldOfInterest && (
+                <>
+                  <br />
+                  <div className="form-group">
+                  <label className="control-label" htmlFor="valueOfInterestInput">
+                    Hat den Wert
+                  </label>
+                  <CreatableSelect
+                    isMulti
+                    options={this.props.element.valuesOfInterest || []}
+                    value={this.props.element.valuesOfInterest}
+                    className="basic-multi-select"
+                    classNamePrefix="select"
+                    onChange={(selectedOptions) => {
+                      this.editElementProp('valuesOfInterest', 'value', { target: { value: selectedOptions } });
+                    }}
+                    onBlur={this.updateElement.bind(this)}
+                    styles={
+                      this.props.bookitupCtx.theme !== 'dark'
+                        ? undefined
+                        : {
+                            control: (styles, { isFocused }) => ({
+                              ...styles,
+                              backgroundColor: '#2b2c3d',
+                              borderColor: isFocused ? '#8c8fa3' : '#666980',
+                              boxShadow: 'none',
+                              '&:hover': {
+                                borderColor: '#8c8fa3',
+                              },
+                            }),
+                            menu: (styles) => ({
+                              ...styles,
+                              backgroundColor: '#1A1B1E',
+                            }),
+                            option: (styles, { isFocused, isSelected }) => ({
+                              ...styles,
+                              backgroundColor: isSelected ? '#4A90E2' : isFocused ? '#34354a' : '#1A1B1E',
+                              color: isSelected ? '#ffffff' : '#d5d7e0',
+                              cursor: 'pointer',
+                            }),
+                            singleValue: (styles) => ({
+                              ...styles,
+                              color: '#ffffff',
+                            }),
+                            input: (styles) => ({
+                              ...styles,
+                              color: '#ffffff',
+                            }),
+                            placeholder: (styles) => ({
+                              ...styles,
+                              color: '#acaebf',
+                            }),
+                          }
+                    }
+                  />
+                </div>
+                </>
+              )
+            }
           </div>
+          </>
         )}
       </div>
     );
