@@ -119,6 +119,7 @@ class TextInput extends React.Component {
     return (
       <div style={{ ...this.props.style }} className={baseClasses}>
         <ComponentHeader {...this.props} />
+        {this.props.data.isHiddenField && <span className="badge badge-secondary">Verstecktes Feld</span>}
         <div className="form-group">
           <ComponentLabel {...this.props} />
           <input {...props} className={inputClasses}/>

@@ -225,7 +225,11 @@ class ReactForm extends React.Component {
       itemData.value = checked_options;
     } else {
       if (!ref) return null;
-      itemData.value = this._getItemValue(item, ref).value;
+      if (item.isHiddenField) {
+        itemData.value = item.fixedValue;
+      } else {
+        itemData.value = this._getItemValue(item, ref).value;
+      }
     }
     return itemData;
   }
@@ -382,7 +386,8 @@ class ReactForm extends React.Component {
     if (item.custom) {
       return this.getCustomElement(item);
     }
-    const conditionalRenderingApplied = item.fieldOfInterest && item.valuesOfInterest && item.valuesOfInterest.length > 0;
+    const alwaysHidden = item.isHiddenField;
+    const conditionalRenderingApplied = !alwaysHidden && item.fieldOfInterest && item.valuesOfInterest && item.valuesOfInterest.length > 0;
     const Input = FormElements[item.element];
     return (<Input
       handleChange={this.handleChange}
@@ -394,7 +399,8 @@ class ReactForm extends React.Component {
       defaultValue={this._getDefaultValue(item)}
       inlineValidation={this.props.inlineValidation}
       validationMessage={validationMessage}
-      style={{ display: conditionalRenderingApplied ? BookitupUtils.getDisplayProp(item, this._collectFormData(this.props.data)) : undefined }}
+      // eslint-disable-next-line no-nested-ternary
+      style={{ display: conditionalRenderingApplied ? BookitupUtils.getDisplayProp(item, this._collectFormData(this.props.data)) : alwaysHidden ? 'none' : undefined }}
       />);
   }
 

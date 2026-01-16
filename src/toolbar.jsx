@@ -488,8 +488,9 @@ class Toolbar extends React.Component {
       elementOptions.min_label = item.min_label;
       elementOptions.max_label = item.max_label;
     }
-
-    elementOptions.sitekey = item.sitekey;
+    if (elementOptions.sitekey) {
+        elementOptions.sitekey = item.sitekey;
+    }
 
     if (item.element === 'MultiColumnRow') {
       elementOptions.col_count = item.col_count;
