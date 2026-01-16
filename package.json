@@ -39,6 +39,7 @@
     }
   ],
   "dependencies": {
+    "@hcaptcha/react-hcaptcha": "^2.0.1",
     "beedle": "^0.8.1",
     "classnames": "^2.2.6",
     "date-fns": "^2.16.1",

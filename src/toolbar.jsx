@@ -349,6 +349,15 @@ class Toolbar extends React.Component {
         field_name: 'recaptcha_',
         required: true,
       },
+      // {
+      //   key: 'HCaptcha',
+      //   name: 'HCaptcha',
+      //   icon: 'fas fa-user-shield',
+      //   sitekey: '10000000-ffff-ffff-ffff-000000000001',
+      //   label: 'HCaptcha',
+      //   field_name: 'HCaptcha_',
+      //   required: true,
+      // },
       {
         key: 'GdprNotice',
         element: 'GDPR',
@@ -380,13 +389,6 @@ class Toolbar extends React.Component {
         icon: 'fa fa-newspaper',
         label: 'Newsletter',
         statement: 'Ich möchte den Newsletter erhalten. Ich kann meine Einwilligung jederzeit widerrufen.',
-      },
-      {
-        key: 'Recaptcha',
-        field_name: 'recaptcha',
-        label: 'Recaptcha',
-        name: 'Recaptcha',
-        sitekey: '',
       },
     ];
   }
@@ -487,9 +489,7 @@ class Toolbar extends React.Component {
       elementOptions.max_label = item.max_label;
     }
 
-    if (item.key === 'Recaptcha') {
-      elementOptions.sitekey = item.sitekey;
-    }
+    elementOptions.sitekey = item.sitekey;
 
     if (item.element === 'MultiColumnRow') {
       elementOptions.col_count = item.col_count;

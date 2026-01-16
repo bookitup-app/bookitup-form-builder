@@ -128,7 +128,7 @@ class ReactForm extends React.Component {
       $item.value = ref.state.img;
     } else if (item.element === 'FileUpload') {
       $item.value = ref.state.fileUpload;
-    } else if (item.element === 'Recaptcha') {
+    } else if (item.element === 'Recaptcha' || item.element === 'HCaptcha') {
       $item.value = ref.state.response;
     } else if (ref && ref.inputField && ref.inputField.current) {
       $item = ReactDOM.findDOMNode(ref.inputField.current);
@@ -212,6 +212,7 @@ class ReactForm extends React.Component {
       valuesOfInterest: item.valuesOfInterest && item.valuesOfInterest.length > 0 ? item.valuesOfInterest.map(v => v.value) : undefined,
     };
     if (!itemData.name) return null;
+
     const ref = this.inputs[item.field_name];
     if (item.element === 'Checkboxes' || item.element === 'RadioButtons') {
       const checked_options = [];
@@ -500,6 +501,7 @@ class ReactForm extends React.Component {
         case 'GDPR':
         case 'AGB':
         case 'Newsletter':
+        case 'HCaptcha':
           return this.getInputElement(item, validationMessage);
         case 'CustomElement':
           return this.getCustomElement(item);

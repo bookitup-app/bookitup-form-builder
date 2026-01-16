@@ -5,7 +5,7 @@ import React from 'react';
 import Select from 'react-select';
 import SignaturePad from 'react-signature-canvas';
 import ReactBootstrapSlider from 'react-bootstrap-slider';
-
+import HCaptcha from '@hcaptcha/react-hcaptcha';
 import StarRating from './star-rating';
 import DatePicker from './date-picker';
 import Recaptcha from './recaptcha';
@@ -1125,6 +1125,82 @@ class Range extends React.Component {
   }
 }
 
+class HCaptchaField extends React.Component {
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      verified: false,
+      response: null,
+    };
+
+    this.hcaptchaRef = React.createRef();
+  }
+
+  handleVerify = (token) => {
+    // token = what you send to backend
+    // ekey  = internal hCaptcha key (usually not needed)
+    this.setState({
+      verified: true,
+      response: token,
+    });
+  };
+
+  handleExpire = () => {
+    this.setState({
+      verified: false,
+      response: null,
+    });
+  };
+
+  handleError = (err) => {
+    console.error('HCaptcha error:', err);
+    this.setState({
+      verified: false,
+      response: null,
+    });
+  };
+
+  reset = () => {
+    if (this.hcaptchaRef.current) {
+      this.hcaptchaRef.current.resetCaptcha();
+    }
+  };
+
+  render() {
+    let baseClasses = 'SortableItem rfb-item';
+    if (this.props.data?.pageBreakBefore) {
+      baseClasses += ' alwaysbreak';
+    }
+
+    const showValidationErrors =
+      this.props.inlineValidation && this.props.validationMessage;
+
+    return (
+      <div className={baseClasses} style={{ ...this.props.style }}>
+        <ComponentHeader {...this.props} />
+
+        <div className="form-group">
+          <ComponentLabel {...this.props} />
+          {this.props.data?.sitekey && (
+            <HCaptcha
+              ref={this.hcaptchaRef}
+              sitekey={this.props.data.sitekey}
+              onVerify={this.handleVerify}
+              onExpire={this.handleExpire}
+              onError={this.handleError}
+              theme={this.props.theme || 'light'}
+            />
+          )}
+          {showValidationErrors && (
+            <span className="error">{this.props.validationMessage}</span>
+          )}
+        </div>
+      </div>
+    );
+  }
+}
+
 FormElements.Header = Header;
 FormElements.Paragraph = Paragraph;
 FormElements.Label = Label;
@@ -1151,5 +1227,6 @@ FormElements.Recaptcha = Recaptcha;
 FormElements.GDPR = GDPR;
 FormElements.AGB = AGB;
 FormElements.Newsletter = Newsletter;
+FormElements.HCaptcha = HCaptchaField;
 
 export default FormElements;
