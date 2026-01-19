@@ -740,7 +740,7 @@ export default class FormElementsEdit extends React.Component {
                   Abhängiges Feld
                 </label>
               <Select
-                options={BookitupUtils.filterObservableElements(this.props.allFields, this.props.element).map(el => ({ value: el.field_name, label: el.key ?? el.field_name }))}
+                options={BookitupUtils.filterObservableElements(this.props.allFields, this.props.element).map(el => ({ value: el.field_name, label: el.text ?? el.field_name }))}
                 value={this.props.element.fieldOfInterest}
                 className="basic-multi-select"
                 classNamePrefix="select"
