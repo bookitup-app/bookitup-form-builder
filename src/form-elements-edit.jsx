@@ -696,8 +696,8 @@ export default class FormElementsEdit extends React.Component {
         {BookitupUtils.isConditionalHiddingPossible(this.props.element) && (
           <>
           <br />
-          <h5>Bedingte Sichtbarkeit</h5>
-          <p>Legen Sie fest, wann dieses Feld basierend auf dem Wert eines anderen Feldes angezeigt wird.</p>
+          <h5>Bedingtes Feld</h5>
+          <p>Lege fest, ob dieses Feld, basierend auf dem Wert eines anderen Feldes, angezeigt wird.</p>
           <br />
           {this.props.element.element === 'TextInput' && (
             <>
@@ -711,7 +711,7 @@ export default class FormElementsEdit extends React.Component {
                 onChange={this.editElementProp.bind(this, 'isHiddenField', 'checked')}
               />
               <label className="custom-control-label" htmlFor="is-hidden-field">
-                Versteck dich immer
+                Verstecktes Feld
               </label>
             </div>
             <br />
