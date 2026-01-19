@@ -223,6 +223,11 @@ class ReactForm extends React.Component {
         }
       });
       itemData.value = checked_options;
+    } else if (item.element === 'Newsletter') {
+      const inputRef = document.getElementById('contact-form-newsletter');
+      if (inputRef) {
+        itemData.value = inputRef.checked;
+      }
     } else {
       if (!ref) return null;
       if (item.isHiddenField) {
