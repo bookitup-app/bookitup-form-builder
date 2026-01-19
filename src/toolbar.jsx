@@ -349,15 +349,15 @@ class Toolbar extends React.Component {
         field_name: 'recaptcha_',
         required: true,
       },
-      // {
-      //   key: 'HCaptcha',
-      //   name: 'HCaptcha',
-      //   icon: 'fas fa-user-shield',
-      //   sitekey: '10000000-ffff-ffff-ffff-000000000001',
-      //   label: 'HCaptcha',
-      //   field_name: 'HCaptcha_',
-      //   required: true,
-      // },
+      {
+        key: 'HCaptcha',
+        name: 'HCaptcha',
+        icon: 'fas fa-user-shield',
+        sitekey: '10000000-ffff-ffff-ffff-000000000001',
+        label: 'HCaptcha',
+        field_name: 'HCaptcha_',
+        required: true,
+      },
       {
         key: 'GdprNotice',
         element: 'GDPR',
@@ -488,7 +488,7 @@ class Toolbar extends React.Component {
       elementOptions.min_label = item.min_label;
       elementOptions.max_label = item.max_label;
     }
-    if (elementOptions.sitekey) {
+    if (item.sitekey) {
         elementOptions.sitekey = item.sitekey;
     }
 
@@ -498,14 +498,6 @@ class Toolbar extends React.Component {
 
     if (item.element === 'GDPR') {
       elementOptions.gdprLink = item.gdprLink;
-    }
-
-    if (item.element === 'AGB') {
-      elementOptions.agbLink = item.agbLink;
-    }
-
-    if (item.element === 'Newsletter') {
-      elementOptions.newsletterText = item.newsletterText;
     }
 
     if (item.defaultValue) { elementOptions.defaultValue = item.defaultValue; }
