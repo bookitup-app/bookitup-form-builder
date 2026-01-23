@@ -1191,6 +1191,7 @@ class HCaptchaField extends React.Component {
               onExpire={this.handleExpire}
               onError={this.handleError}
               theme={this.props.theme || 'light'}
+              languageOverride='de'
             />
           )}
           {showValidationErrors && (
