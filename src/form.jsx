@@ -325,6 +325,17 @@ class ReactForm extends React.Component {
   validateForm() {
     const errors = {};
 
+    const getLabel = (item) => {
+      const { label, placeholderText, key } = item;
+      if (label && label.trim() !== '') {
+        return label;
+      }
+      if (placeholderText && placeholderText.trim() !== '') {
+        return placeholderText;
+      }
+      return key;
+    };
+
     const filterOrphanItems = () => {
       const allItemIDs = this.props.data.map(i => i.id);
       return this.props.data.filter((i) => !(i.parentId && !allItemIDs.includes(i.parentId)));
@@ -343,7 +354,7 @@ class ReactForm extends React.Component {
       }
       const isItemHidden = item.fieldOfInterest && item.valuesOfInterest && item.valuesOfInterest.length > 0 && BookitupUtils.getDisplayProp(item, currentValues) === 'none';
       if (!isItemHidden && this._isInvalid(item)) {
-        errors[item.field_name] = `${item.label} ${intl.formatMessage({ id: 'message.is-required' })}!`;
+        errors[item.field_name] = `${getLabel(item)} ${intl.formatMessage({ id: 'message.is-required' })}!`;
       }
 
       if (item.element === 'EmailInput') {
@@ -356,7 +367,7 @@ class ReactForm extends React.Component {
             );
           const checkEmail = validateEmail(emailValue);
           if (!item.skipValidation && !checkEmail) {
-            errors[item.field_name] = `${item.label}: ${intl.formatMessage({ id: 'message.invalid-email' })}`;
+            errors[item.field_name] = `${getLabel(item)}: ${intl.formatMessage({ id: 'message.invalid-email' })}`;
           }
         }
       }
@@ -371,13 +382,13 @@ class ReactForm extends React.Component {
           );
           const checkPhone = validatePhone(phoneValue);
           if (!item.skipValidation && !checkPhone) {
-            errors[item.field_name] = `${item.label}: ${intl.formatMessage({ id: 'message.invalid-phone-number' })}`;
+            errors[item.field_name] = `${getLabel(item)}: ${intl.formatMessage({ id: 'message.invalid-phone-number' })}`;
           }
         }
       }
 
       if (this.props.validateForCorrectness && this._isIncorrect(item)) {
-        errors[item.field_name] = `${item.label} ${intl.formatMessage({ id: 'message.was-answered-incorrectly' })}!`;
+        errors[item.field_name] = `${getLabel(item)} ${intl.formatMessage({ id: 'message.was-answered-incorrectly' })}!`;
       }
     });
     return errors;
