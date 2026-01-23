@@ -166,7 +166,7 @@ class ReactForm extends React.Component {
 
   _isInvalid(item) {
     let invalid = false;
-    if (item.required === true && !item.hideForEventKinds) {
+    if (item.required === true) {
       const ref = this.inputs[item.field_name];
       if (item.element === 'Checkboxes' || item.element === 'RadioButtons') {
         let checked_options = 0;
@@ -335,13 +335,14 @@ class ReactForm extends React.Component {
     if (this.props.display_short) {
       data_items = this.props.data.filter((i) => i.alternateForm === true);
     }
+    const currentValues = this._collectFormData(this.props.data);
 
     data_items.forEach(item => {
       if (item.element === 'Signature') {
         this._getSignatureImg(item);
       }
-
-      if (this._isInvalid(item)) {
+      const isItemHidden = item.fieldOfInterest && item.valuesOfInterest && item.valuesOfInterest.length > 0 && BookitupUtils.getDisplayProp(item, currentValues) === 'none';
+      if (!isItemHidden && this._isInvalid(item)) {
         errors[item.field_name] = `${item.label} ${intl.formatMessage({ id: 'message.is-required' })}!`;
       }
 
