@@ -88,14 +88,13 @@ class DatePicker extends React.Component {
   }
 
   render() {
-    const { showTimeSelect, showYearPicker, showYearDropdown, showTimeSelectOnly, showTimeInput, datePickerProps } = this.props.data;
+    const { showTimeSelect, showYearPicker, showYearDropdown, showTimeSelectOnly, showTimeInput, datePickerProps, placeholderText } = this.props.data;
     const props = {};
     props.type = 'date';
     props.className = 'form-control';
     props.name = this.props.data.field_name;
     const readOnly = this.props.data.readOnly || this.props.read_only;
     // const iOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
-    const placeholderText = this.state.formatMask.toLowerCase();
 
     if (this.props.mutable) {
       props.defaultValue = this.props.defaultValue;
@@ -145,10 +144,10 @@ class DatePicker extends React.Component {
                 showYearDropdown={showYearDropdown}
                 showTimeSelectOnly={showTimeSelectOnly}
                 showTimeInput={showTimeInput}
-                dateFormat={this.state.formatMask}
+                dateFormat="dd.MM.yyyy"
                 portalId="root-portal"
                 autoComplete="off"
-                placeholderText={placeholderText}
+                placeholderText={placeholderText ?? 'TT.MM.JJJJ'}
                 minDate={props.name && props.name.startsWith('date') ? new Date() : undefined}
                 />
             }
