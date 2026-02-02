@@ -106,6 +106,12 @@ class DatePicker extends React.Component {
 
     const showValidationErrors = this.props.inlineValidation && this.props.validationMessage;
 
+    const getPlaceholderText = () => {
+      if (placeholderText && placeholderText !== '') return placeholderText;
+      if (this.state.formatMask && this.state.formatMask === 'HH:mm') return this.state.formatMask;
+      return 'TT.MM.JJJJ';
+    };
+
     return (
       <div className={baseClasses} style={{ ...this.props.style }}>
         <ComponentHeader {...this.props} />
@@ -144,10 +150,10 @@ class DatePicker extends React.Component {
                 showYearDropdown={showYearDropdown}
                 showTimeSelectOnly={showTimeSelectOnly}
                 showTimeInput={showTimeInput}
-                dateFormat="dd.MM.yyyy"
+                dateFormat={this.state.formatMask ?? 'dd.MM.yyyy'}
                 portalId="root-portal"
                 autoComplete="off"
-                placeholderText={placeholderText ?? 'TT.MM.JJJJ'}
+                placeholderText={getPlaceholderText()}
                 minDate={props.name && props.name.startsWith('date') ? new Date() : undefined}
                 />
             }
