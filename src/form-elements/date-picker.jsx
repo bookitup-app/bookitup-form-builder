@@ -108,7 +108,7 @@ class DatePicker extends React.Component {
 
     const getPlaceholderText = () => {
       if (placeholderText && placeholderText !== '') return placeholderText;
-      if (this.state.formatMask && this.state.formatMask === 'HH:mm') return this.state.formatMask;
+      if (this.props.data.showTimeSelectOnly) return 'HH:mm';
       return 'TT.MM.JJJJ';
     };
 
@@ -150,7 +150,7 @@ class DatePicker extends React.Component {
                 showYearDropdown={showYearDropdown}
                 showTimeSelectOnly={showTimeSelectOnly}
                 showTimeInput={showTimeInput}
-                dateFormat={this.state.formatMask ?? 'dd.MM.yyyy'}
+                dateFormat={this.state.formatMask}
                 portalId="root-portal"
                 autoComplete="off"
                 placeholderText={getPlaceholderText()}
