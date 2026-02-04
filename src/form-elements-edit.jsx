@@ -11,11 +11,16 @@ import IntlMessages from './language-provider/IntlMessages';
 import { BookitupUtils } from './utils/BookitupUtils';
 
 const toolbar = {
-  options: ['inline', 'fontSize'],
+  options: ['inline', 'fontSize', 'textAlign'],
   inline: {
     inDropdown: false,
     className: undefined,
     options: ['bold', 'italic', 'underline'],
+  },
+    textAlign: {
+    inDropdown: false,
+    className: undefined,
+    options: ['left', 'center', 'right'],
   },
 };
 
