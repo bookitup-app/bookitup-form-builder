@@ -334,7 +334,7 @@ class ReactForm extends React.Component {
       if (placeholderText && placeholderText.trim() !== '') {
         return placeholderText;
       }
-      return key;
+      return 'Feld';
     };
 
     const filterOrphanItems = () => {
