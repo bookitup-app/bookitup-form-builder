@@ -106,6 +106,7 @@ export default class Demobar extends React.Component {
             <div className="modal-dialog modal-lg" role="document">
               <div className="modal-content">
                 <ReactFormGenerator
+                  useOptionNameInsteadOfKey
                   download_path=""
                   back_action="/"
                   back_name="Back"
