@@ -1,3 +1,4 @@
+/* eslint-disable implicit-arrow-linebreak */
 /* eslint-disable camelcase */
 /* eslint-disable import/prefer-default-export */
 /* eslint-disable quotes */
@@ -17,18 +18,17 @@ const SUPPORTED_HIDE_ELEMENTS = [
   "FiveColumnRow",
 ];
 
-const OBERVABLE_ELEMENTS = ["Dropdown", "TextInput"];
+const OBERVABLE_ELEMENTS = ["Dropdown", "RadioButtons"];
+
+const isCustomerEmailField = (el) =>
+  el.field_name && el.field_name.startsWith("customer.emailAddress");
 
 const isConditionalHiddingPossible = (el) => {
-  const { field_name, element } = el;
-  if (field_name && field_name.startsWith("customer.emailAddress")) {
-    // Customer address is always required
+  const { element } = el;
+  if (isCustomerEmailField(el)) {
+    // Customer email address is always required
     return false;
   }
-  // if (field_name && field_name.startsWith("kind")) {
-  //   // Dont show for event kind selection
-  //   return false;
-  // }
   return SUPPORTED_HIDE_ELEMENTS.includes(element);
 };
 
@@ -38,7 +38,12 @@ const getDisplayProp = (item, data) => {
     const fieldRef = data.find((i) => i.name === item.fieldOfInterest.value);
     if (fieldRef) {
       const { value } = fieldRef;
-      if (item.valuesOfInterest.map((v) => v.value).includes(value)) {
+      const values = Array.isArray(value) ? value : [value];
+      if (
+        item.valuesOfInterest
+          .map((v) => v.value)
+          .some((v) => values.includes(v))
+      ) {
         display = undefined;
       }
     }
@@ -49,11 +54,11 @@ const getDisplayProp = (item, data) => {
 const filterObservableElements = (elements, curr) =>
   elements.filter(
     (e) =>
-      OBERVABLE_ELEMENTS.includes(e.element) && e.field_name !== curr.field_name
+      OBERVABLE_ELEMENTS.includes(e.element) &&
+      e.field_name !== curr.field_name,
   );
 
-const showRequiredCheckbox = (el) =>
-  !["Recaptcha", "AGB", "GDPR"].includes(el.element);
+const showRequiredCheckbox = (el) => !["Recaptcha", "AGB", "GDPR"].includes(el.element);
 
 export const BookitupUtils = {
   isConditionalHiddingPossible,

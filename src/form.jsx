@@ -313,9 +313,14 @@ class ReactForm extends React.Component {
   }
 
   handleChange(event) {
-    // Trigger re-render to support conditional items rendering
-    this.setState((prev) => ({ ...prev, trigger: Date.now }));
-
+    const { target } = event;
+    if (target) {
+      const { type, tagName } = target;
+      // Trigger re-render to support conditional items rendering
+      if (type === 'radio' || tagName === 'SELECT') {
+        this.setState((prev) => ({ ...prev, trigger: Date.now }));
+      }
+    }
     if (this.props.onChange) {
       const {onChange} = this.props;
       const data = this._collectFormData(this.props.data);
