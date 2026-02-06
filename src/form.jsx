@@ -317,7 +317,7 @@ class ReactForm extends React.Component {
     if (target) {
       const { type, tagName } = target;
       // Trigger re-render to support conditional items rendering
-      if (type === 'radio' || tagName === 'SELECT') {
+      if (['radio', 'checkbox'].includes(type) || tagName === 'SELECT') {
         this.setState((prev) => ({ ...prev, trigger: Date.now }));
       }
     }

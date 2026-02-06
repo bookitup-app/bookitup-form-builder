@@ -18,7 +18,7 @@ const SUPPORTED_HIDE_ELEMENTS = [
   "FiveColumnRow",
 ];
 
-const OBERVABLE_ELEMENTS = ["Dropdown", "RadioButtons"];
+const OBERVABLE_ELEMENTS = ["Dropdown", "RadioButtons", "Checkboxes"];
 
 const isCustomerEmailField = (el) =>
   el.field_name && el.field_name.startsWith("customer.emailAddress");
