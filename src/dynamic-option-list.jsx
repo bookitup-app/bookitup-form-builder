@@ -87,55 +87,76 @@
      this.props.updateElement.call(this.props.preview, this_element);
    }
 
+   moveOptionUp(index) {
+    if (index === 0) return;
+    const this_element = this.state.element;
+    [this_element.options[index], this_element.options[index - 1]] = 
+      [this_element.options[index - 1], this_element.options[index]];
+    this.props.updateElement.call(this.props.preview, this_element);
+    }
+
+    moveOptionDown(index) {
+      if (index === this.state.element.options.length - 1) return;
+      const this_element = this.state.element;
+      [this_element.options[index], this_element.options[index + 1]] = 
+        [this_element.options[index + 1], this_element.options[index]];
+      this.props.updateElement.call(this.props.preview, this_element);
+    }
+
+
    render() {
      if (this.state.dirty) {
        this.state.element.dirty = true;
      }
-     return (
-       <div className="dynamic-option-list">
-         <ul>
-           <li>
-             <div className="row">
-               <div className="col-sm-6"><b><IntlMessages id='options' /></b></div>
-               { this.props.canHaveOptionValue &&
-               <div className="col-sm-2"><b><IntlMessages id='value' /></b></div> }
-               { this.props.canHaveOptionValue && this.props.canHaveOptionCorrect &&
-               <div className="col-sm-4"><b><IntlMessages id='correct' /></b></div> }
-             </div>
-           </li>
-           {
-             this.props.element.options.map((option, index) => {
-               const this_key = `edit_${option.key}`;
-               const val = (option.value !== this._setValue(option.text)) ? option.value : '';
-               return (
-                 <li className="clearfix" key={this_key}>
-                   <div className="row">
-                     <div className="col-sm-6">
-                       <input tabIndex={index + 1} className="form-control" style={{ width: '100%' }} type="text" name={`text_${index}`} placeholder="Option text" value={option.text} onBlur={this.updateOption.bind(this)} onChange={this.editOption.bind(this, index)} />
-                     </div>
-                     { this.props.canHaveOptionValue &&
-                     <div className="col-sm-2">
-                       <input className="form-control" type="text" name={`value_${index}`} value={val} onChange={this.editValue.bind(this, index)} onBlur={this.trimValue.bind(this, index)} />
-                     </div> }
-                     { this.props.canHaveOptionValue && this.props.canHaveOptionCorrect &&
-                     <div className="col-sm-1">
-                       <input className="form-control" type="checkbox" value="1" onChange={this.editOptionCorrect.bind(this, index)} checked={option.hasOwnProperty('correct')} />
-                     </div> }
-                     <div className="col-sm-3">
-                       <div className="dynamic-options-actions-buttons">
-                         <button onClick={this.addOption.bind(this, index)} className="btn btn-success"><i className="fas fa-plus-circle"></i></button>
-                         { index > 0
-                           && <button onClick={this.removeOption.bind(this, index)} className="btn btn-danger"><i className="fas fa-minus-circle"></i></button>
-                         }
-                       </div>
-                     </div>
-                   </div>
-                 </li>
-               );
-             })
-           }
-         </ul>
-       </div>
-     );
+    return (
+      <div className="dynamic-option-list">
+        <ul>
+          <li>
+            <div className="row">
+              <div className="col-sm-6"><b><IntlMessages id='options' /></b></div>
+              { this.props.canHaveOptionValue &&
+              <div className="col-sm-2"><b><IntlMessages id='value' /></b></div> }
+              { this.props.canHaveOptionValue && this.props.canHaveOptionCorrect &&
+              <div className="col-sm-4"><b><IntlMessages id='correct' /></b></div> }
+            </div>
+          </li>
+          {
+            this.props.element.options.map((option, index) => {
+              const this_key = `edit_${option.key}`;
+              const val = (option.value !== this._setValue(option.text)) ? option.value : '';
+              return (
+                <li className="clearfix" key={this_key}>
+                  <div className="row">
+                    <div className="col-sm-6 d-flex align-items-center" style={{ gap: '4px' }}>
+                      <button onClick={this.moveOptionUp.bind(this, index)} disabled={index === 0} className="btn btn-info btn-sm">
+                        <i className="fas fa-chevron-up"></i>
+                      </button>
+                      <button onClick={this.moveOptionDown.bind(this, index)} disabled={index === this.props.element.options.length - 1} className="btn btn-info btn-sm">
+                        <i className="fas fa-chevron-down"></i>
+                      </button>
+                      <input tabIndex={index + 1} className="form-control" style={{ flex: 1 }} type="text" name={`text_${index}`} placeholder="Option text" value={option.text} onBlur={this.updateOption.bind(this)} onChange={this.editOption.bind(this, index)} />
+                    </div>
+                    { this.props.canHaveOptionValue &&
+                    <div className="col-sm-2">
+                      <input className="form-control" type="text" name={`value_${index}`} value={val} onChange={this.editValue.bind(this, index)} onBlur={this.trimValue.bind(this, index)} />
+                    </div> }
+                    { this.props.canHaveOptionValue && this.props.canHaveOptionCorrect &&
+                    <div className="col-sm-1">
+                      <input className="form-control" type="checkbox" value="1" onChange={this.editOptionCorrect.bind(this, index)} checked={option.hasOwnProperty('correct')} />
+                    </div> }
+                    <div className="col-sm-3">
+                      <div className="dynamic-options-actions-buttons d-flex">
+                        <button onClick={this.addOption.bind(this, index)} className="btn btn-success"><i className="fas fa-plus-circle"></i></button>
+                        { index > 0 && <button onClick={this.removeOption.bind(this, index)} className="btn btn-danger"><i className="fas fa-minus-circle"></i></button> }
+                      </div>
+                    </div>
+                  </div>
+                </li>
+              );
+            })
+          }
+        </ul>
+      </div>
+    );
    }
  }
