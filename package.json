@@ -1,6 +1,6 @@
 {
   "name": "bookitup-form-builder",
-  "version": "1.2.5",
+  "version": "1.2.6",
   "description": "A complete form builder for react.",
   "main": "lib/index.js",
   "types": "types/index.d.ts",
