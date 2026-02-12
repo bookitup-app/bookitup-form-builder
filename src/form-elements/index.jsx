@@ -320,47 +320,81 @@ class Dropdown extends React.Component {
   constructor(props) {
     super(props);
     this.inputField = React.createRef();
+    const options = this.buildOptions(props.data.options);
+    this.state = {
+      value: this.getSelectedOption(props.defaultValue ?? props.data.defaultValue, options),
+    };
   }
 
+  buildOptions(options = []) {
+    return options.map(option => ({
+      ...option,
+      label: option.text,
+      value: option.value ?? option.text,
+    }));
+  }
+
+  getSelectedOption(defaultValue, options) {
+    if (defaultValue === undefined || defaultValue === null || defaultValue === '') {
+      return null;
+    }
+    const selectedValue = `${defaultValue}`;
+    return options.find(option => (
+      `${option.value}` === selectedValue
+      || `${option.label}` === selectedValue
+      || `${option.key}` === selectedValue
+    )) || null;
+  }
+
+  handleChange = (value) => {
+    this.setState({ value }, () => {
+      if (this.props.handleChange) {
+        this.props.handleChange({
+          target: {
+            tagName: 'SELECT',
+            type: 'select-one',
+            name: this.props.data.field_name,
+            value: value ? value.value : '',
+          },
+        });
+      }
+    });
+  };
+
   render() {
-    const props = {};
-    props.name = this.props.data.field_name;
+    const options = this.buildOptions(this.props.data.options);
+    const props = {
+      options,
+      onChange: this.handleChange,
+      placeholder: this.props.data.placeholderText || 'Bitte auswählen…',
+      value: this.state.value,
+    };
 
     if (this.props.mutable) {
-      props.defaultValue = this.props.defaultValue;
-      props.ref = this.inputField;
-    }
-
-    if (this.props.read_only) {
-      props.disabled = 'disabled';
+      props.isDisabled = this.props.read_only;
     }
 
     let baseClasses = 'SortableItem rfb-item';
 
-    let inputClasses = 'form-control';
-
     if (this.props.data.pageBreakBefore) { baseClasses += ' alwaysbreak'; }
 
     const showValidationErrors = this.props.inlineValidation && this.props.validationMessage;
-
-    if (showValidationErrors) { inputClasses += ' invalid'; }
 
     return (
       <div style={{ ...this.props.style }} className={baseClasses}>
         <ComponentHeader {...this.props} />
         <div className="form-group">
           <ComponentLabel {...this.props} />
-          <select {...props} className={inputClasses} >
-            {!this.props.data.defaultValue && (
-              <option value="" selected>
-                Bitte auswählen…
-              </option>
-            )}
-            {this.props.data.options.map((option) => {
-              const this_key = `preview_${option.key}`;
-              return <option value={option.value ?? option.text} key={this_key}>{option.text}</option>;
-            })}
-          </select>
+          <Select {...props} className={showValidationErrors ? 'invalid' : ''} />
+          {this.props.mutable && (
+            <input
+              type="hidden"
+              name={this.props.data.field_name}
+              value={this.state.value ? this.state.value.value : ''}
+              ref={this.inputField}
+              readOnly
+            />
+          )}
           {showValidationErrors &&
                 <span className='error'>{this.props.validationMessage}</span>}
         </div>

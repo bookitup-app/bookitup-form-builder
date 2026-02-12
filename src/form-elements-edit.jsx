@@ -167,7 +167,7 @@ export default class FormElementsEdit extends React.Component {
     } = this.props.element;
     const canHaveImageSize = this.state.element.element === 'Image' || this.state.element.element === 'Camera';
 
-    const placeholderLabelSupported = ['TextInput', 'TextArea', 'PhoneNumber', 'EmailInput', 'DatePicker'].includes(this.state.element.element);
+    const placeholderLabelSupported = ['TextInput', 'TextArea', 'PhoneNumber', 'EmailInput', 'DatePicker', 'Dropdown'].includes(this.state.element.element);
 
     const this_files = this.props.files.length ? this.props.files : [];
     if (this_files.length < 1 || (this_files.length > 0 && this_files[0].id !== '')) {
