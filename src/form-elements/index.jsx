@@ -2,7 +2,7 @@
 import fetch from 'isomorphic-fetch';
 import { saveAs } from 'file-saver';
 import React from 'react';
-import Select from 'react-select';
+import Select, { components as SelectComponents } from 'react-select';
 import SignaturePad from 'react-signature-canvas';
 import ReactBootstrapSlider from 'react-bootstrap-slider';
 import HCaptcha from '@hcaptcha/react-hcaptcha';
@@ -362,12 +362,37 @@ class Dropdown extends React.Component {
   };
 
   render() {
+    const Control = ({ children, className, ...controlProps }) => {
+      const invalidClass = controlProps.selectProps.invalid ? ' invalid' : '';
+      return (
+        <SelectComponents.Control
+          {...controlProps}
+          className={`form-control${invalidClass}${className ? ` ${className}` : ''}`}
+        >
+          {children}
+        </SelectComponents.Control>
+      );
+    };
+    const DropdownIndicator = (indicatorProps) => (
+      <SelectComponents.DropdownIndicator {...indicatorProps}>
+        <span className="rfb-select-chevron" aria-hidden="true" />
+      </SelectComponents.DropdownIndicator>
+    );
+
+    const showValidationErrors = this.props.inlineValidation && this.props.validationMessage;
     const options = this.buildOptions(this.props.data.options);
     const props = {
       options,
       onChange: this.handleChange,
       placeholder: this.props.data.placeholderText || 'Bitte auswählen…',
       value: this.state.value,
+      classNamePrefix: 'rfb-select',
+      components: {
+        Control,
+        DropdownIndicator,
+        IndicatorSeparator: () => null,
+      },
+      invalid: showValidationErrors,
     };
 
     if (this.props.mutable) {
@@ -378,14 +403,12 @@ class Dropdown extends React.Component {
 
     if (this.props.data.pageBreakBefore) { baseClasses += ' alwaysbreak'; }
 
-    const showValidationErrors = this.props.inlineValidation && this.props.validationMessage;
-
     return (
       <div style={{ ...this.props.style }} className={baseClasses}>
         <ComponentHeader {...this.props} />
         <div className="form-group">
           <ComponentLabel {...this.props} />
-          <Select {...props} className={showValidationErrors ? 'invalid' : ''} />
+          <Select {...props} />
           {this.props.mutable && (
             <input
               type="hidden"
