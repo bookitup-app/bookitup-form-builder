@@ -240,15 +240,28 @@ class ReactForm extends React.Component {
     return itemData;
   }
 
-  _collectFormData(data) {
-    const formData = [];
-    data.forEach(item => {
-      const item_data = this._collect(item);
-      if (item_data) {
-        formData.push(item_data);
-      }
-    });
-    return formData;
+  _isConditionallyHidden(item, values) {
+    const conditionalRenderingApplied = !item.isHiddenField && item.fieldOfInterest && item.valuesOfInterest && item.valuesOfInterest.length > 0;
+    if (!conditionalRenderingApplied) {
+      return false;
+    }
+    return BookitupUtils.getDisplayProp(item, values) === 'none';
+  }
+
+  _collectFormData(data, options = {}) {
+    const { excludeConditionallyHidden = false } = options;
+    const collectedData = data
+      .map((item) => ({ item, itemData: this._collect(item) }))
+      .filter(({ itemData }) => itemData);
+
+    if (!excludeConditionallyHidden) {
+      return collectedData.map(({ itemData }) => itemData);
+    }
+
+    const values = collectedData.map(({ itemData }) => itemData);
+    return collectedData
+      .filter(({ item }) => !this._isConditionallyHidden(item, values))
+      .map(({ itemData }) => itemData);
   }
 
   _getSignatureImg(item) {
@@ -285,7 +298,7 @@ class ReactForm extends React.Component {
     this.setState({ ...this.state, attemptingSubmit: true });
     const { onSubmit } = this.props;
     if (onSubmit) {
-      const data = this._collectFormData(this.props.data);
+      const data = this._collectFormData(this.props.data, { excludeConditionallyHidden: true });
       await onSubmit(data)
         .then((response) => this.showBanner(response.ok))
         .catch(() => this.showBanner(false));
