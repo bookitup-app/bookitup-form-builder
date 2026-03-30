@@ -488,7 +488,7 @@ class Toolbar extends React.Component {
       elementOptions.min_label = item.min_label;
       elementOptions.max_label = item.max_label;
     }
-    if (item.sitekey) {
+    if (item.sitekey !== undefined && item.sitekey !== null) {
         elementOptions.sitekey = item.sitekey;
     }
 
