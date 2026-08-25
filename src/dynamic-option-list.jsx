@@ -66,6 +66,21 @@
      this.props.updateElement.call(this.props.preview, this_element);
    }
 
+   editOptionDefault(option_index, e) {
+     const this_element = this.state.element;
+     this_element.options = this_element.options.map((option, index) => {
+       const updatedOption = { ...option };
+       if (index === option_index && e.target.checked) {
+         updatedOption.defaultValue = true;
+       } else {
+         delete updatedOption.defaultValue;
+       }
+       return updatedOption;
+     });
+     this.setState({ element: this_element });
+     this.props.updateElement.call(this.props.preview, this_element);
+   }
+
    updateOption() {
      const this_element = this.state.element;
      // to prevent ajax calls with no change
@@ -90,7 +105,7 @@
    moveOptionUp(index) {
     if (index === 0) return;
     const this_element = this.state.element;
-    [this_element.options[index], this_element.options[index - 1]] = 
+    [this_element.options[index], this_element.options[index - 1]] =
       [this_element.options[index - 1], this_element.options[index]];
     this.props.updateElement.call(this.props.preview, this_element);
     }
@@ -98,26 +113,31 @@
     moveOptionDown(index) {
       if (index === this.state.element.options.length - 1) return;
       const this_element = this.state.element;
-      [this_element.options[index], this_element.options[index + 1]] = 
+      [this_element.options[index], this_element.options[index + 1]] =
         [this_element.options[index + 1], this_element.options[index]];
       this.props.updateElement.call(this.props.preview, this_element);
     }
-
 
    render() {
      if (this.state.dirty) {
        this.state.element.dirty = true;
      }
+    const canHaveOptionDefaultValue = this.props.element.element === 'Dropdown';
+    const showsCorrectOption = this.props.canHaveOptionValue && this.props.canHaveOptionCorrect;
+    const optionColumnClass = canHaveOptionDefaultValue && showsCorrectOption ? 'col-sm-5' : 'col-sm-6';
+    const correctColumnClass = canHaveOptionDefaultValue ? 'col-sm-1' : 'col-sm-4';
     return (
       <div className="dynamic-option-list">
         <ul>
           <li>
             <div className="row">
-              <div className="col-sm-6"><b><IntlMessages id='options' /></b></div>
+              <div className={optionColumnClass}><b><IntlMessages id='options' /></b></div>
               { this.props.canHaveOptionValue &&
               <div className="col-sm-2"><b><IntlMessages id='value' /></b></div> }
-              { this.props.canHaveOptionValue && this.props.canHaveOptionCorrect &&
-              <div className="col-sm-4"><b><IntlMessages id='correct' /></b></div> }
+              { showsCorrectOption &&
+              <div className={correctColumnClass}><b><IntlMessages id='correct' /></b></div> }
+              { canHaveOptionDefaultValue &&
+              <div className="col-sm-1"><b><IntlMessages id='default' /></b></div> }
             </div>
           </li>
           {
@@ -127,7 +147,7 @@
               return (
                 <li className="clearfix" key={this_key}>
                   <div className="row">
-                    <div className="col-sm-6 d-flex align-items-center" style={{ gap: '4px' }}>
+                    <div className={`${optionColumnClass} d-flex align-items-center`} style={{ gap: '4px' }}>
                       <button onClick={this.moveOptionUp.bind(this, index)} disabled={index === 0} className="btn btn-info btn-sm">
                         <i className="fas fa-chevron-up"></i>
                       </button>
@@ -140,9 +160,13 @@
                     <div className="col-sm-2">
                       <input className="form-control" type="text" name={`value_${index}`} value={val} onChange={this.editValue.bind(this, index)} onBlur={this.trimValue.bind(this, index)} />
                     </div> }
-                    { this.props.canHaveOptionValue && this.props.canHaveOptionCorrect &&
+                    { showsCorrectOption &&
                     <div className="col-sm-1">
                       <input className="form-control" type="checkbox" value="1" onChange={this.editOptionCorrect.bind(this, index)} checked={option.hasOwnProperty('correct')} />
+                    </div> }
+                    { canHaveOptionDefaultValue &&
+                    <div className="col-sm-1">
+                      <input className="form-control" type="checkbox" value="1" onChange={this.editOptionDefault.bind(this, index)} checked={option.defaultValue === true} />
                     </div> }
                     <div className="col-sm-3">
                       <div className="dynamic-options-actions-buttons d-flex">

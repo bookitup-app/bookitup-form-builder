@@ -321,8 +321,10 @@ class Dropdown extends React.Component {
     super(props);
     this.inputField = React.createRef();
     const options = this.buildOptions(props.data.options);
+    const configuredDefaultValue = props.defaultValue ?? props.data.defaultValue;
+    const defaultOption = options.find(option => option.defaultValue === true);
     this.state = {
-      value: this.getSelectedOption(props.defaultValue ?? props.data.defaultValue, options),
+      value: this.getSelectedOption(configuredDefaultValue ?? defaultOption?.value, options),
     };
   }
 

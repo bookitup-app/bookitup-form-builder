@@ -53,6 +53,7 @@ export type FormBuilderInput = {
   label: string;
 };
 export type Option = {
+  defaultValue?: boolean;
   key: string;
   label?: string;
   text: string;
