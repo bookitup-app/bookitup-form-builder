@@ -762,12 +762,12 @@ class ReactForm extends React.Component {
                 </div>
                 <div className='btn-toolbar'>
                   {showingActions && isMultiStep && currentSection > 0 && (
-                    <button id='rfb-form-previous-button' type='button' className='btn btn-default btn-big rfb-previous-button' onClick={this.handlePreviousSection}>
+                    <button id='rfb-form-previous-button' type='button' className='btn btn-default btn-big rfb-form-navigation-button rfb-previous-button' onClick={this.handlePreviousSection}>
                       {previousButtonText}
                     </button>
                   )}
                   {showingActions && isMultiStep && currentSection < sections.length - 1 && (
-                    <button id='rfb-form-next-button' type='button' className='btn btn-primary btn-big rfb-next-button' onClick={this.handleNextSection}>
+                    <button id='rfb-form-next-button' type='button' className='btn btn-primary btn-big rfb-form-navigation-button rfb-next-button' onClick={this.handleNextSection}>
                       {nextButtonText}
                     </button>
                   )}

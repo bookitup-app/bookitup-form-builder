@@ -61,8 +61,10 @@ input[type="date"] {
 
   .rfb-form-steps {
     margin-bottom: 24px;
+    width: 100%;
 
     ol {
+      align-items: center;
       display: flex;
       gap: 64px;
       justify-content: center;
@@ -78,6 +80,13 @@ input[type="date"] {
     display: flex;
     flex: 0 0 auto;
     position: relative;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+
+    &::marker {
+      content: '';
+    }
 
     &::after {
       background: #ddd;
@@ -115,11 +124,14 @@ input[type="date"] {
     align-items: center;
     border: 2px solid #bbb;
     border-radius: 50%;
+    box-sizing: border-box;
     display: inline-flex;
     flex: 0 0 38px;
     font-size: 16px;
+    font-weight: 600;
     height: 38px;
     justify-content: center;
+    line-height: 1;
     position: relative;
     width: 38px;
     z-index: 1;
@@ -143,10 +155,42 @@ input[type="date"] {
   .btn-toolbar {
     align-items: center;
     display: flex;
+    flex-wrap: wrap;
     gap: 10px;
 
     .rfb-next-button {
       margin-left: auto;
+    }
+  }
+
+  .rfb-form-navigation-button {
+    align-items: center;
+    appearance: none;
+    border: 1px solid transparent;
+    border-radius: 4px;
+    cursor: pointer;
+    display: inline-flex;
+    font-family: inherit;
+    justify-content: center;
+    min-height: 40px;
+    padding: 9px 16px;
+    text-align: center;
+  }
+
+  .rfb-previous-button {
+    background: #fff;
+    border-color: #ccc;
+    color: #333;
+  }
+
+  .rfb-next-button {
+    background: #337ab7;
+    border-color: #337ab7;
+    color: #fff;
+
+    &:hover {
+      background: #286090;
+      border-color: #204d74;
     }
   }
 
