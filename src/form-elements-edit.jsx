@@ -578,7 +578,7 @@ export default class FormElementsEdit extends React.Component {
             </div>
           </div>
         )}
-        {this.props.element.showDescription && (
+        {(this.props.element.showDescription || this.props.element.element === 'Section') && (
           <div className="form-group">
             <label className="control-label" htmlFor="questionDescription">
               <IntlMessages id="description" />

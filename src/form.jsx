@@ -38,6 +38,7 @@ class ReactForm extends React.Component {
     showingBanner: false,
     submitOk: undefined,
     attemptingSubmit: false,
+    currentSection: 0,
     trigger: Date.now(),
   };
 
@@ -53,7 +54,60 @@ class ReactForm extends React.Component {
     // Bind handleBlur and handleChange methods
     this.handleBlur = this.handleBlur.bind(this);
     this.handleChange = this.handleChange.bind(this);
+    this.handleNextSection = this.handleNextSection.bind(this);
+    this.handlePreviousSection = this.handlePreviousSection.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
+  }
+
+  _buildSections(items) {
+    if (!items.some(item => item.element === 'Section')) {
+      return [{ id: 'single-section', marker: null, items }];
+    }
+
+    const sections = [];
+    const leadingItems = [];
+    let currentSection;
+    items.forEach((item) => {
+      if (item.element === 'Section') {
+        currentSection = {
+          id: item.id,
+          marker: item,
+          items: sections.length === 0 ? [...leadingItems, item] : [item],
+        };
+        sections.push(currentSection);
+      } else if (currentSection) {
+        currentSection.items.push(item);
+      } else {
+        leadingItems.push(item);
+      }
+    });
+    return sections;
+  }
+
+  _getRootItems() {
+    let items = this.props.data.filter(item => item && !item.parentId);
+    if (this.props.display_short) {
+      items = items.filter(item => item.alternateForm === true);
+    }
+    return items;
+  }
+
+  _getSectionTitle(section, index) {
+    const fallback = `${this.props.intl.formatMessage({ id: 'section' })} ${index + 1}`;
+    if (!section.marker?.content) return fallback;
+    return section.marker.content.replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim() || fallback;
+  }
+
+  _getSectionValidationItems(section) {
+    const itemIds = new Set(section.items.map(item => item.id));
+    let previousSize = -1;
+    while (previousSize !== itemIds.size) {
+      previousSize = itemIds.size;
+      this.props.data.forEach((item) => {
+        if (item?.parentId && itemIds.has(item.parentId)) itemIds.add(item.id);
+      });
+    }
+    return this.props.data.filter(item => item && item.element !== 'Section' && itemIds.has(item.id));
   }
 
   _convert(answers) {
@@ -282,12 +336,25 @@ class ReactForm extends React.Component {
   async handleSubmit(e) {
     e.preventDefault();
 
+    const sections = this._buildSections(this._getRootItems());
+    const currentSection = Math.min(this.state.currentSection, sections.length - 1);
+    if (!this.props.hide_actions && currentSection < sections.length - 1) {
+      this.handleNextSection();
+      return;
+    }
+
     let errors = {};
     if (!this.props.skip_validations) {
       errors = this.validateForm();
 
       // Publish only error validation messages, if any.
-      this.setState({ ...this.state, errors });
+      const invalidSection = sections.findIndex(section => (
+        this._getSectionValidationItems(section).some(item => errors[item.field_name])
+      ));
+      this.setState({
+        errors,
+        currentSection: invalidSection > -1 ? invalidSection : currentSection,
+      });
       this.emitter.emit('formValidation', Object.values(errors));
     }
 
@@ -341,7 +408,33 @@ class ReactForm extends React.Component {
     }
   }
 
-  validateForm() {
+  handleNextSection(e) {
+    if (e) e.preventDefault();
+    const sections = this._buildSections(this._getRootItems());
+    const currentSection = Math.min(this.state.currentSection, sections.length - 1);
+    if (currentSection >= sections.length - 1) return;
+
+    let errors = {};
+    if (!this.props.skip_validations) {
+      errors = this.validateForm(this._getSectionValidationItems(sections[currentSection]));
+      this.emitter.emit('formValidation', Object.values(errors));
+    }
+    if (Object.keys(errors).length > 0) {
+      this.setState({ errors });
+      return;
+    }
+    this.setState({ currentSection: currentSection + 1, errors: {} });
+  }
+
+  handlePreviousSection(e) {
+    if (e) e.preventDefault();
+    this.setState(prevState => ({
+      currentSection: Math.max(0, prevState.currentSection - 1),
+      errors: {},
+    }));
+  }
+
+  validateForm(itemsToValidate) {
     const errors = {};
 
     const getLabel = (item) => {
@@ -359,10 +452,10 @@ class ReactForm extends React.Component {
       const allItemIDs = this.props.data.map(i => i.id);
       return this.props.data.filter((i) => !(i.parentId && !allItemIDs.includes(i.parentId)));
     };
-    let data_items = filterOrphanItems();
+    let data_items = itemsToValidate || filterOrphanItems();
     const { intl } = this.props;
 
-    if (this.props.display_short) {
+    if (!itemsToValidate && this.props.display_short) {
       data_items = this.props.data.filter((i) => i.alternateForm === true);
     }
     const currentValues = this._collectFormData(this.props.data);
@@ -520,7 +613,11 @@ class ReactForm extends React.Component {
       }
     });
 
-    const items = data_items.filter(x => !x.parentId).map(item => {
+    const rootItems = this._getRootItems();
+    const sections = this._buildSections(rootItems);
+    const currentSection = Math.min(this.state.currentSection, sections.length - 1);
+    const isMultiStep = sections.length > 1 && !this.props.hide_actions;
+    const renderItem = (item) => {
       let validationMessage = this.state.errors[item.field_name];
 
       if (validationMessage && item.validationMessageOverride) {
@@ -591,7 +688,7 @@ class ReactForm extends React.Component {
         default:
           return this.getSimpleElement(item);
       }
-    });
+    };
 
     const formTokenStyle = {
       display: 'none',
@@ -607,7 +704,10 @@ class ReactForm extends React.Component {
       setDefaultLocale(this.props.locale);
     }
 
-    const showingSubmitButton = !this.props.hide_actions;
+    const showingActions = !this.props.hide_actions;
+    const showingSubmitButton = showingActions && (!isMultiStep || currentSection === sections.length - 1);
+    const nextButtonText = this.props.nextButtonText || this.props.intl.formatMessage({ id: 'next' });
+    const previousButtonText = this.props.previousButtonText || this.props.intl.formatMessage({ id: 'previous' });
 
     return (
       <div>
@@ -623,12 +723,56 @@ class ReactForm extends React.Component {
                     <input name='task_id' type='hidden' value={this.props.task_id} />
                   </div>
                 }
-                {items}
+                {isMultiStep && (
+                  <nav
+                    id='rfb-form-stepper'
+                    className='rfb-form-steps'
+                    aria-label={this.props.intl.formatMessage({ id: 'form-progress' })}
+                  >
+                    <ol>
+                      {sections.map((section, index) => {
+                        let stepClass = 'rfb-form-step';
+                        if (index === currentSection) stepClass += ' active';
+                        if (index < currentSection) stepClass += ' completed';
+                        return (
+                          <li
+                            className={stepClass}
+                            key={section.id}
+                            aria-current={index === currentSection ? 'step' : undefined}
+                            aria-label={this._getSectionTitle(section, index)}
+                          >
+                            <span className='rfb-form-step-number'>{index + 1}</span>
+                          </li>
+                        );
+                      })}
+                    </ol>
+                  </nav>
+                )}
+                <div className='rfb-form-sections'>
+                  {sections.map((section, index) => (
+                    <section
+                      className='rfb-form-section'
+                      key={section.id}
+                      hidden={isMultiStep && index !== currentSection}
+                      aria-hidden={isMultiStep && index !== currentSection}
+                    >
+                      {section.items.map(renderItem)}
+                    </section>
+                  ))}
+                </div>
                 <div className='btn-toolbar'>
-                  {
-                  showingSubmitButton && this.handleRenderSubmit()
-                  }
-                  {!this.props.hide_actions && this.props.back_action &&
+                  {showingActions && isMultiStep && currentSection > 0 && (
+                    <button id='rfb-form-previous-button' type='button' className='btn btn-default btn-big rfb-previous-button' onClick={this.handlePreviousSection}>
+                      {previousButtonText}
+                    </button>
+                  )}
+                  {showingActions && isMultiStep && currentSection < sections.length - 1 && (
+                    <button id='rfb-form-next-button' type='button' className='btn btn-primary btn-big rfb-next-button' onClick={this.handleNextSection}>
+                      {nextButtonText}
+                    </button>
+                  )}
+                  {showingSubmitButton && this.handleRenderSubmit()}
+                  {showingActions && this.props.back_action &&
                     this.handleRenderBack()
                   }
                 </div>

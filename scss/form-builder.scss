@@ -44,6 +44,21 @@
       );
     }
 
+    .rfb-form-section-heading {
+      background: #f5f8fb;
+      border-top: 3px solid #337ab7;
+
+      .rfb-form-section-title {
+        margin: 0;
+      }
+
+      .rfb-form-section-description {
+        color: #666;
+        margin: 8px 0 0;
+        white-space: pre-line;
+      }
+    }
+
     label {
       font-weight: normal;
     }

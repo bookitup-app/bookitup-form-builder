@@ -121,6 +121,15 @@ class Toolbar extends React.Component {
         icon: 'fas fa-arrows-alt-h',
       },
       {
+        key: 'Section',
+        name: intl.formatMessage({ id: 'section' }),
+        static: true,
+        icon: 'fas fa-layer-group',
+        content: intl.formatMessage({ id: 'section-placeholder' }),
+        description: '',
+        showDescription: true,
+      },
+      {
         key: 'Dropdown',
         canHaveAnswer: true,
         name: intl.formatMessage({ id: 'dropdown' }),
@@ -441,6 +450,8 @@ class Toolbar extends React.Component {
     if (item.canDefaultToday) { elementOptions.defaultToday = false; }
 
     if (item.content) { elementOptions.content = item.content; }
+
+    if (item.description !== undefined) { elementOptions.description = item.description; }
 
     if (item.href) { elementOptions.href = item.href; }
 

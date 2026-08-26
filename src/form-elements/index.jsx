@@ -84,6 +84,24 @@ class LineBreak extends React.Component {
   }
 }
 
+class FormSection extends React.Component {
+  render() {
+    let classNames = 'static rfb-form-section-title';
+    if (this.props.data.bold) { classNames += ' bold'; }
+    if (this.props.data.italic) { classNames += ' italic'; }
+
+    return (
+      <div style={{ ...this.props.style }} className="SortableItem rfb-item rfb-form-section-heading">
+        <ComponentHeader {...this.props} />
+        <h2 className={classNames} dangerouslySetInnerHTML={{ __html: myxss.process(this.props.data.content) }} />
+        {this.props.data.description && (
+          <p className="rfb-form-section-description">{this.props.data.description}</p>
+        )}
+      </div>
+    );
+  }
+}
+
 class TextInput extends React.Component {
   constructor(props) {
     super(props);
@@ -1268,6 +1286,7 @@ FormElements.Header = Header;
 FormElements.Paragraph = Paragraph;
 FormElements.Label = Label;
 FormElements.LineBreak = LineBreak;
+FormElements.Section = FormSection;
 FormElements.TextInput = TextInput;
 FormElements.EmailInput = EmailInput;
 FormElements.PhoneNumber = PhoneNumber;

@@ -59,6 +59,97 @@ input[type="date"] {
 .react-form-builder-form {
   position: relative;
 
+  .rfb-form-steps {
+    margin-bottom: 24px;
+
+    ol {
+      display: flex;
+      gap: 64px;
+      justify-content: center;
+      list-style: none;
+      margin: 0;
+      padding: 0;
+    }
+  }
+
+  .rfb-form-step {
+    align-items: center;
+    color: #777;
+    display: flex;
+    flex: 0 0 auto;
+    position: relative;
+
+    &::after {
+      background: #ddd;
+      content: '';
+      height: 2px;
+      left: 100%;
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 64px;
+      z-index: 0;
+    }
+
+    &:last-child::after {
+      display: none;
+    }
+
+    &.active,
+    &.completed {
+      color: inherit;
+
+      .rfb-form-step-number {
+        background: #337ab7;
+        border-color: #337ab7;
+        color: #fff;
+      }
+    }
+
+    &.completed::after {
+      background: #337ab7;
+    }
+  }
+
+  .rfb-form-step-number {
+    align-items: center;
+    border: 2px solid #bbb;
+    border-radius: 50%;
+    display: inline-flex;
+    flex: 0 0 38px;
+    font-size: 16px;
+    height: 38px;
+    justify-content: center;
+    position: relative;
+    width: 38px;
+    z-index: 1;
+  }
+
+  .rfb-form-section-heading {
+    border-bottom: 1px solid #e5e5e5;
+    margin-bottom: 12px;
+
+    .rfb-form-section-title {
+      margin: 0;
+    }
+
+    .rfb-form-section-description {
+      color: #666;
+      margin: 8px 0 0;
+      white-space: pre-line;
+    }
+  }
+
+  .btn-toolbar {
+    align-items: center;
+    display: flex;
+    gap: 10px;
+
+    .rfb-next-button {
+      margin-left: auto;
+    }
+  }
+
   .rfb-item.alwaysbreak {
     page-break-before: always;
   }
@@ -127,6 +218,28 @@ input[type="date"] {
       .label-required {
         margin-left: 5px;
       }
+    }
+  }
+}
+
+@media (max-width: $screen-sm-min) {
+  .react-form-builder-form {
+    .rfb-form-steps ol {
+      justify-content: flex-start;
+      overflow-x: auto;
+      padding-bottom: 6px;
+    }
+
+    .rfb-form-step {
+      flex: 0 0 auto;
+
+      &::after {
+        width: 40px;
+      }
+    }
+
+    .rfb-form-steps ol {
+      gap: 40px;
     }
   }
 }

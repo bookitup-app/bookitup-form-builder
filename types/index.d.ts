@@ -9,6 +9,7 @@ type BaseElement = {
     | "Label"
     | "Paragraph"
     | "Line Break"
+    | "Section"
     | "Dropdown"
     | "Tags"
     | "Checkboxes"
@@ -29,6 +30,7 @@ type BaseElement = {
     | "Camera"
     | "Recaptcha";
   showDescription?: boolean;
+  description?: string;
   skipValidation?: boolean;
   validationMessageOverride?: string;
   required: boolean;
@@ -178,6 +180,8 @@ export interface FormGeneratorProps {
   locale?: string;
   appLocaleOverride?: Locale;
   inlineValidation?: boolean;
+  nextButtonText?: string;
+  previousButtonText?: string;
   submitMessageText?: string;
   showSubmitMessage?: boolean;
   useOptionNameInsteadOfKey?: boolean;
