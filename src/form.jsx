@@ -94,6 +94,7 @@ class ReactForm extends React.Component {
 
   _getSectionTitle(section, index) {
     const fallback = `${this.props.intl.formatMessage({ id: 'section' })} ${index + 1}`;
+    if (section.marker?.titleName?.trim()) return section.marker.titleName.trim();
     if (!section.marker?.content) return fallback;
     return section.marker.content.replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim() || fallback;
   }
@@ -741,7 +742,10 @@ class ReactForm extends React.Component {
                             aria-current={index === currentSection ? 'step' : undefined}
                             aria-label={this._getSectionTitle(section, index)}
                           >
-                            <span className='rfb-form-step-number'>{index + 1}</span>
+                            <span className='rfb-form-step-indicator'>
+                              <span className='rfb-form-step-number'>{index + 1}</span>
+                            </span>
+                            <span className='rfb-form-step-title'>{this._getSectionTitle(section, index)}</span>
                           </li>
                         );
                       })}

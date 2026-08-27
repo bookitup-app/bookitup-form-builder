@@ -192,6 +192,21 @@ export default class FormElementsEdit extends React.Component {
           <h4 className="float-left">{this.props.element.text}</h4>
           <i className="float-right fas fa-times dismiss-edit" onClick={this.props.manualEditModeOff} />
         </div>
+        {this.props.element.element === 'Section' && (
+          <div className="form-group">
+            <label className="control-label" htmlFor="section-title-name">
+              <IntlMessages id="section-stepper-title" />:
+            </label>
+            <input
+              id="section-title-name"
+              type="text"
+              className="form-control"
+              defaultValue={this.props.element.titleName}
+              onBlur={this.updateElement.bind(this)}
+              onChange={this.editElementProp.bind(this, 'titleName', 'value')}
+            />
+          </div>
+        )}
         {this.props.element.hasOwnProperty('content') && (
           <div className="form-group">
             <label className="control-label">
@@ -545,7 +560,7 @@ export default class FormElementsEdit extends React.Component {
             </div>
           </div>
         )}
-        {this.props.element.hasOwnProperty('static') && this.props.element.static && (
+        {this.props.element.hasOwnProperty('static') && this.props.element.static && this.props.element.element !== 'Section' && (
           <div className="form-group">
             <label className="control-label">
               <IntlMessages id="text-style" />

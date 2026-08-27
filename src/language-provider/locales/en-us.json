@@ -58,6 +58,7 @@
   "line-break" : "Line Break",
   "section" : "Section",
   "section-placeholder" : "Section name...",
+  "section-stepper-title" : "Stepper name",
   "form-progress" : "Form progress",
   "next" : "Next",
   "previous" : "Previous",

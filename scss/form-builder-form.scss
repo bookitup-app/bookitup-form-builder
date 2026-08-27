@@ -64,9 +64,9 @@ input[type="date"] {
     width: 100%;
 
     ol {
-      align-items: center;
+      align-items: flex-start;
+      box-sizing: border-box;
       display: flex;
-      gap: 64px;
       justify-content: center;
       list-style: none;
       margin: 0;
@@ -76,38 +76,23 @@ input[type="date"] {
 
   .rfb-form-step {
     align-items: center;
-    color: #777;
+    color: inherit;
     display: flex;
-    flex: 0 0 auto;
-    position: relative;
+    flex: 1 1 0;
+    flex-direction: column;
     list-style: none;
     margin: 0;
+    max-width: 180px;
+    min-width: 100px;
     padding: 0;
+    position: relative;
 
     &::marker {
       content: '';
     }
 
-    &::after {
-      background: #ddd;
-      content: '';
-      height: 2px;
-      left: 100%;
-      position: absolute;
-      top: 50%;
-      transform: translateY(-50%);
-      width: 64px;
-      z-index: 0;
-    }
-
-    &:last-child::after {
-      display: none;
-    }
-
     &.active,
     &.completed {
-      color: inherit;
-
       .rfb-form-step-number {
         background: #337ab7;
         border-color: #337ab7;
@@ -115,9 +100,34 @@ input[type="date"] {
       }
     }
 
-    &.completed::after {
+    &.completed .rfb-form-step-indicator::after {
       background: #337ab7;
     }
+  }
+
+  .rfb-form-step-indicator {
+    align-items: center;
+    display: flex;
+    height: 38px;
+    justify-content: center;
+    position: relative;
+    width: 100%;
+
+    &::after {
+      background: #ddd;
+      content: '';
+      height: 2px;
+      left: calc(50% + 19px);
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      width: calc(100% - 38px);
+      z-index: 0;
+    }
+  }
+
+  .rfb-form-step:last-child .rfb-form-step-indicator::after {
+    display: none;
   }
 
   .rfb-form-step-number {
@@ -137,16 +147,26 @@ input[type="date"] {
     z-index: 1;
   }
 
+  .rfb-form-step-title {
+    box-sizing: border-box;
+    color: inherit;
+    font-size: 14px;
+    line-height: 1.3;
+    margin-top: 8px;
+    overflow-wrap: anywhere;
+    text-align: center;
+    width: 100%;
+  }
+
   .rfb-form-section-heading {
-    border-bottom: 1px solid #e5e5e5;
-    margin-bottom: 12px;
+    margin-bottom: 24px;
 
     .rfb-form-section-title {
       margin: 0;
     }
 
     .rfb-form-section-description {
-      color: #666;
+      color: inherit;
       margin: 8px 0 0;
       white-space: pre-line;
     }
@@ -168,6 +188,7 @@ input[type="date"] {
     appearance: none;
     border: 1px solid transparent;
     border-radius: 4px;
+    box-sizing: border-box;
     cursor: pointer;
     display: inline-flex;
     font-family: inherit;
@@ -268,22 +289,53 @@ input[type="date"] {
 
 @media (max-width: $screen-sm-min) {
   .react-form-builder-form {
+    .rfb-form-steps {
+      margin-bottom: 20px;
+    }
+
     .rfb-form-steps ol {
-      justify-content: flex-start;
-      overflow-x: auto;
-      padding-bottom: 6px;
+      justify-content: center;
+      overflow: visible;
+      padding: 0 4px;
+      width: 100%;
     }
 
     .rfb-form-step {
-      flex: 0 0 auto;
+      flex: 1 1 0;
+      max-width: none;
+      min-width: 0;
+    }
+
+    .rfb-form-step-indicator {
+      height: 34px;
 
       &::after {
-        width: 40px;
+        left: calc(50% + 17px);
+        width: calc(100% - 34px);
       }
     }
 
-    .rfb-form-steps ol {
-      gap: 40px;
+    .rfb-form-step-number {
+      flex-basis: 34px;
+      font-size: 14px;
+      height: 34px;
+      width: 34px;
+    }
+
+    .rfb-form-step-title {
+      font-size: 12px;
+      hyphens: auto;
+      margin-top: 6px;
+      padding: 0 3px;
+    }
+
+    .rfb-form-navigation-button {
+      flex: 1 1 0;
+      min-width: 0;
+    }
+
+    .btn-toolbar .rfb-next-button {
+      margin-left: 0;
     }
   }
 }

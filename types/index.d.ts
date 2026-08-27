@@ -31,6 +31,7 @@ type BaseElement = {
     | "Recaptcha";
   showDescription?: boolean;
   description?: string;
+  titleName?: string;
   skipValidation?: boolean;
   validationMessageOverride?: string;
   required: boolean;

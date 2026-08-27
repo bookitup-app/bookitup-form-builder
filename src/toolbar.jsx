@@ -126,6 +126,7 @@ class Toolbar extends React.Component {
         static: true,
         icon: 'fas fa-layer-group',
         content: intl.formatMessage({ id: 'section-placeholder' }),
+        titleName: intl.formatMessage({ id: 'section-placeholder' }),
         description: '',
         showDescription: true,
       },
@@ -450,6 +451,8 @@ class Toolbar extends React.Component {
     if (item.canDefaultToday) { elementOptions.defaultToday = false; }
 
     if (item.content) { elementOptions.content = item.content; }
+
+    if (item.titleName !== undefined) { elementOptions.titleName = item.titleName; }
 
     if (item.description !== undefined) { elementOptions.description = item.description; }
 
