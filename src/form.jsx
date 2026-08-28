@@ -617,6 +617,7 @@ class ReactForm extends React.Component {
     const rootItems = this._getRootItems();
     const sections = this._buildSections(rootItems);
     const currentSection = Math.min(this.state.currentSection, sections.length - 1);
+    const showStepper = sections.some(section => section.marker) && !this.props.hide_actions;
     const isMultiStep = sections.length > 1 && !this.props.hide_actions;
     const renderItem = (item) => {
       let validationMessage = this.state.errors[item.field_name];
@@ -724,7 +725,7 @@ class ReactForm extends React.Component {
                     <input name='task_id' type='hidden' value={this.props.task_id} />
                   </div>
                 }
-                {isMultiStep && (
+                {showStepper && (
                   <nav
                     id='rfb-form-stepper'
                     className='rfb-form-steps'

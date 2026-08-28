@@ -189,7 +189,9 @@ export default class FormElementsEdit extends React.Component {
     return (
       <div>
         <div className="clearfix">
-          <h4 className="float-left">{this.props.element.text}</h4>
+          <h4 className="float-left">
+            {this.props.element.element === 'Section' ? <IntlMessages id="section" /> : this.props.element.text}
+          </h4>
           <i className="float-right fas fa-times dismiss-edit" onClick={this.props.manualEditModeOff} />
         </div>
         {this.props.element.element === 'Section' && (
