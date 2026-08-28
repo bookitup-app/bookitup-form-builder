@@ -103,15 +103,11 @@ export default class Preview extends React.Component {
   }
 
   _onDestroy(item) {
-    if (item.childItems) {
-      item.childItems.forEach(x => {
-        const child = this.getDataById(x);
-        if (child) {
-          store.dispatch('delete', child);
-        }
-      });
-    }
-    store.dispatch('delete', item);
+    const childIds = new Set(item.childItems || []);
+    const newData = this.state.data.filter(candidate => (
+      candidate && candidate !== item && candidate.parentId !== item.id && !childIds.has(candidate.id)
+    ));
+    store.dispatch('updateOrder', newData);
   }
 
   getDataById(id) {
@@ -213,7 +209,6 @@ export default class Preview extends React.Component {
     } else {
       data.splice(hoverIndex, 0, item);
       this.saveData(item, hoverIndex, hoverIndex);
-      store.dispatch('insertItem', item);
     }
   }
 

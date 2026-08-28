@@ -1,11 +1,10 @@
-import React, { useImperativeHandle, Fragment } from 'react';
+import React, { useImperativeHandle } from 'react';
 import { DropTarget } from 'react-dnd';
 import FormElements from '../form-elements';
 import ItemTypes from '../ItemTypes';
 
 import CustomElement from '../form-elements/custom-element';
 import Registry from '../stores/registry';
-import store from '../stores/store';
 
 function getCustomElement(item, props) {
   if (!item.component || typeof item.component !== 'function') {
@@ -69,15 +68,13 @@ const Dustbin = React.forwardRef(
       ref,
       () => ({
         onDrop: (dropped) => {
-          console.log("dropped ites")
           const { data } = dropped;
           if (data) {
-            onDropSuccess && onDropSuccess();
-            store.dispatch('deleteLastItem');
+            if (onDropSuccess) onDropSuccess();
           }
         },
       }),
-      [],
+      [onDropSuccess],
     );
 
     const element = getElement(item, rest);
@@ -111,7 +108,6 @@ export default DropTarget(
       monitor,
       component,
     ) {
-
       if (!component) {
         return;
       }
@@ -127,13 +123,11 @@ export default DropTarget(
 
       // Do not allow replace component other than both items in same multi column row
       if (item.col === undefined && props.items[props.col]) {
-        store.dispatch('resetLastItem');
         return;
       }
 
       if (!isContainer(item)) {
         (component).onDrop(item);
-        console.log("calling on Drop from 137",item)
         if (item.data && typeof props.setAsChild === 'function') {
           const isNew = !item.data.id;
           const data = isNew ? item.onCreate(item.data) : item.data;

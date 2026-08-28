@@ -1,5 +1,6 @@
 import Store from 'beedle';
 import { get, post } from './requests';
+import normalizeFormData from '../utils/formDataIntegrity';
 
 let _saveUrl;
 let _onPost;
@@ -8,8 +9,9 @@ let _onLoad;
 const store = new Store({
   actions: {
     setData(context, data, saveData) {
-      context.commit('setData', data);
-      if (saveData) this.save(data);
+      const normalizedData = normalizeFormData(data);
+      context.commit('setData', normalizedData);
+      if (saveData) this.save(normalizedData);
     },
 
     load(context, { loadUrl, saveUrl, data, saveAlways }) {
@@ -43,24 +45,10 @@ const store = new Store({
 
     delete(context, element) {
       const { data, saveAlways } = context.state;
-      data.splice(data.indexOf(element), 1);
+      const index = data.indexOf(element);
+      if (index === -1) return;
+      data.splice(index, 1);
       this.setData(context, data, saveAlways);
-    },
-
-    deleteLastItem(context) {
-      const { lastItem } = context.state;
-      if (lastItem) {
-        this.delete(context, lastItem);
-        context.commit('setLastItem', null);
-      }
-    },
-
-    resetLastItem(context) {
-      const { lastItem } = context.state;
-      if (lastItem) {
-        context.commit('setLastItem', null);
-        // console.log('resetLastItem');
-      }
     },
 
     post(context) {
@@ -73,11 +61,6 @@ const store = new Store({
       const newData = elements.filter(x => x && !x.parentId);
       elements.filter(x => x && x.parentId).forEach(x => newData.push(x));
       this.setData(context, newData, saveAlways);
-    },
-
-    insertItem(context, item) {
-      // console.log('insertItem', item);
-      context.commit('setLastItem', item.isContainer ? null : item);
     },
 
     save(data) {
@@ -100,18 +83,11 @@ const store = new Store({
       state.saveAlways = payload;
       return state;
     },
-    setLastItem(state, payload) {
-      // eslint-disable-next-line no-param-reassign
-      state.lastItem = payload;
-      // console.log('setLastItem', payload);
-      return state;
-    },
   },
 
   initialState: {
     data: [],
     saveAlways: true,
-    lastItem: null,
   },
 });
 

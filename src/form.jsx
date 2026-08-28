@@ -85,11 +85,32 @@ class ReactForm extends React.Component {
   }
 
   _getRootItems() {
-    let items = this.props.data.filter(item => item && !item.parentId);
+    // Treat children whose parent disappeared as root items so previously
+    // corrupted forms remain visible and usable instead of silently losing
+    // their fields.
+    let items = this.props.data.filter(item => item && !this._getParentForChild(item));
     if (this.props.display_short) {
       items = items.filter(item => item.alternateForm === true);
     }
     return items;
+  }
+
+  _getParentForChild(child) {
+    if (!child || this._isContainerItem(child)) return undefined;
+    const isClaimedBy = parent => (
+      parent && parent !== child && Array.isArray(parent.childItems) && parent.childItems.includes(child.id)
+    );
+    const declaredParent = child.parentId && this.getDataById(child.parentId);
+    if (isClaimedBy(declaredParent)) return declaredParent;
+    return this.props.data.find(isClaimedBy);
+  }
+
+  _isContainerItem(item) {
+    return item && (
+      item.isContainer === true
+      || Array.isArray(item.childItems)
+      || ['FieldSet', 'TwoColumnRow', 'ThreeColumnRow', 'MultiColumnRow'].includes(item.element)
+    );
   }
 
   _getSectionTitle(section, index) {
@@ -105,7 +126,8 @@ class ReactForm extends React.Component {
     while (previousSize !== itemIds.size) {
       previousSize = itemIds.size;
       this.props.data.forEach((item) => {
-        if (item?.parentId && itemIds.has(item.parentId)) itemIds.add(item.id);
+        const parent = this._getParentForChild(item);
+        if (parent && itemIds.has(parent.id)) itemIds.add(item.id);
       });
     }
     return this.props.data.filter(item => item && item.element !== 'Section' && itemIds.has(item.id));
@@ -449,11 +471,9 @@ class ReactForm extends React.Component {
       return 'Feld';
     };
 
-    const filterOrphanItems = () => {
-      const allItemIDs = this.props.data.map(i => i.id);
-      return this.props.data.filter((i) => !(i.parentId && !allItemIDs.includes(i.parentId)));
-    };
-    let data_items = itemsToValidate || filterOrphanItems();
+    // Orphans are rendered as recovered root fields, so they must also be
+    // validated. Filtering them here only hid the corrupted relationship.
+    let data_items = itemsToValidate || this.props.data.filter(Boolean);
     const { intl } = this.props;
 
     if (!itemsToValidate && this.props.display_short) {
@@ -509,7 +529,7 @@ class ReactForm extends React.Component {
 
   getDataById(id) {
     const { data } = this.props;
-    return data.find(x => x.id === id);
+    return data.find(x => x && x.id === id);
   }
 
   getInputElement(item, validationMessage) {
@@ -535,9 +555,18 @@ class ReactForm extends React.Component {
   }
 
   getContainerElement(item, Element) {
-    const controls = item.childItems.map((x) => {
+    let defaultChildCount = 1;
+    if (item.element === 'TwoColumnRow') defaultChildCount = 2;
+    if (item.element === 'ThreeColumnRow') defaultChildCount = 3;
+    if (item.element === 'MultiColumnRow') defaultChildCount = item.col_count || 4;
+    const childItems = Array.isArray(item.childItems)
+      ? item.childItems
+      : Array.from({ length: defaultChildCount }, () => null);
+    const controls = childItems.map((x) => {
       if (x) {
         const childItem = this.getDataById(x);
+        const attachedParent = this._getParentForChild(childItem);
+        if (!childItem || !attachedParent || attachedParent.id !== item.id) return <div>&nbsp;</div>;
         let validationMessage = this.state.errors[childItem.field_name];
         if (validationMessage && childItem.validationMessageOverride) {
           validationMessage = childItem.validationMessageOverride;

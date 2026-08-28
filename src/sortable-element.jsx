@@ -67,9 +67,14 @@ const cardTarget = {
       if (props.data && props.data.isContainer) {
         return;
       }
-      // console.log('CARD', item);
+      const createdItem = item.onCreate(item.data);
+      // Keep the auto-inserted object on this drag operation. If it is later
+      // dropped into a column, setAsChild can move this exact object rather
+      // than creating a duplicate and deleting global store state.
+      item.data = createdItem;
+      item.id = createdItem.id;
       item.index = hoverIndex;
-      props.insertCard(item.onCreate(item.data), hoverIndex);
+      props.insertCard(createdItem, hoverIndex);
     }
 
     // Determine rectangle on screen
