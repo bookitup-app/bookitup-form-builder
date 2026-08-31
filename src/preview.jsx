@@ -207,9 +207,13 @@ export default class Preview extends React.Component {
     if (id) {
       this.restoreCard(item, id);
     } else {
-      data.splice(hoverIndex, 0, item);
-      this.saveData(item, hoverIndex, hoverIndex);
+      const keepFirst = item.element === 'Section' && !data.some(element => element?.element === 'Section');
+      const insertIndex = keepFirst ? 0 : hoverIndex;
+      data.splice(insertIndex, 0, item);
+      this.saveData(item, insertIndex, insertIndex);
+      return { index: insertIndex, keepFirst };
     }
+    return { index: hoverIndex, keepFirst: false };
   }
 
   moveCard(dragIndex, hoverIndex) {

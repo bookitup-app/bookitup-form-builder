@@ -39,7 +39,12 @@ const store = new Store({
 
     create(context, element) {
       const { data, saveAlways } = context.state;
-      data.push(element);
+      const isFirstSection = element.element === 'Section' && !data.some(item => item?.element === 'Section');
+      if (isFirstSection) {
+        data.unshift(element);
+      } else {
+        data.push(element);
+      }
       this.setData(context, data, saveAlways);
     },
 

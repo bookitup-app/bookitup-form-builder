@@ -51,6 +51,7 @@ const cardTarget = {
     const item = monitor.getItem();
 
     if (item.itemType === ItemTypes.BOX && item.index === -1) return;
+    if (item.keepFirst) return;
 
     // Don't replace multi-column component unless both drag & hover are multi-column
     if (props.data?.isContainer && !item.data?.isContainer) return;
@@ -73,8 +74,10 @@ const cardTarget = {
       // than creating a duplicate and deleting global store state.
       item.data = createdItem;
       item.id = createdItem.id;
-      item.index = hoverIndex;
-      props.insertCard(createdItem, hoverIndex);
+      const insertion = props.insertCard(createdItem, hoverIndex);
+      item.index = insertion.index;
+      item.keepFirst = insertion.keepFirst;
+      if (item.keepFirst) return;
     }
 
     // Determine rectangle on screen
