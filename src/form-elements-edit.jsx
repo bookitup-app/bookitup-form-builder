@@ -203,7 +203,7 @@ export default class FormElementsEdit extends React.Component {
               id="section-title-name"
               type="text"
               className="form-control"
-              defaultValue={this.props.element.titleName}
+              defaultValue={this.props.element.titleName || ''}
               onBlur={this.updateElement.bind(this)}
               onChange={this.editElementProp.bind(this, 'titleName', 'value')}
             />

@@ -113,11 +113,8 @@ class ReactForm extends React.Component {
     );
   }
 
-  _getSectionTitle(section, index) {
-    const fallback = `${this.props.intl.formatMessage({ id: 'section' })} ${index + 1}`;
-    if (section.marker?.titleName?.trim()) return section.marker.titleName.trim();
-    if (!section.marker?.content) return fallback;
-    return section.marker.content.replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim() || fallback;
+  _getSectionTitle(section) {
+    return section.marker?.titleName?.trim() || '';
   }
 
   _getSectionValidationItems(section) {
@@ -763,6 +760,8 @@ class ReactForm extends React.Component {
                     <ol>
                       {sections.map((section, index) => {
                         let stepClass = 'rfb-form-step';
+                        const stepTitle = this._getSectionTitle(section);
+                        const accessibleTitle = stepTitle || `${this.props.intl.formatMessage({ id: 'section' })} ${index + 1}`;
                         if (index === currentSection) stepClass += ' active';
                         if (index < currentSection) stepClass += ' completed';
                         return (
@@ -770,12 +769,12 @@ class ReactForm extends React.Component {
                             className={stepClass}
                             key={section.id}
                             aria-current={index === currentSection ? 'step' : undefined}
-                            aria-label={this._getSectionTitle(section, index)}
+                            aria-label={accessibleTitle}
                           >
                             <span className='rfb-form-step-indicator'>
                               <span className='rfb-form-step-number'>{index + 1}</span>
                             </span>
-                            <span className='rfb-form-step-title'>{this._getSectionTitle(section, index)}</span>
+                            {stepTitle && <span className='rfb-form-step-title'>{stepTitle}</span>}
                           </li>
                         );
                       })}

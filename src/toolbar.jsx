@@ -126,7 +126,7 @@ class Toolbar extends React.Component {
         static: true,
         icon: 'fas fa-list-ol',
         content: intl.formatMessage({ id: 'section-placeholder' }),
-        titleName: intl.formatMessage({ id: 'section-placeholder' }),
+        titleName: '',
         description: '',
         showDescription: true,
       },
