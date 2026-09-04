@@ -20,6 +20,23 @@ const SUPPORTED_HIDE_ELEMENTS = [
 
 const OBERVABLE_ELEMENTS = ["Dropdown", "RadioButtons", "Checkboxes"];
 
+const PREFILLABLE_ELEMENTS = [
+  "Dropdown",
+  "Tags",
+  "Checkboxes",
+  "RadioButtons",
+  "TextInput",
+  "EmailInput",
+  "NumberInput",
+  "PhoneNumber",
+  "TextArea",
+  "Rating",
+  "DatePicker",
+  "Range",
+];
+
+const UUID_SUFFIX_PATTERN = /[0-9a-f]{8}(?:-[0-9a-f]{4}){3}-[0-9a-f]{12}$/i;
+
 const isCustomerEmailField = (el) =>
   el.field_name && el.field_name.startsWith("customer.emailAddress");
 
@@ -60,9 +77,40 @@ const filterObservableElements = (elements, curr) =>
 
 const showRequiredCheckbox = (el) => !["Recaptcha", "AGB", "GDPR"].includes(el.element);
 
+const isPrefillSupported = (el) => {
+  if (!el || !el.field_name) {
+    return false;
+  }
+
+  if (el.custom) {
+    return el.forwardRef === true;
+  }
+
+  return PREFILLABLE_ELEMENTS.includes(el.element);
+};
+
+const getPrefillParameterName = (fieldName) => {
+  if (typeof fieldName !== "string") {
+    return "";
+  }
+
+  const uuidMatch = fieldName.match(UUID_SUFFIX_PATTERN);
+  if (!uuidMatch) {
+    return fieldName;
+  }
+
+  if (fieldName.startsWith("custom")) {
+    return `custom-${uuidMatch[0].split("-")[0]}`;
+  }
+
+  return fieldName.slice(0, uuidMatch.index).replace(/[_-]+$/, "");
+};
+
 export const BookitupUtils = {
   isConditionalHiddingPossible,
   getDisplayProp,
   filterObservableElements,
   showRequiredCheckbox,
+  isPrefillSupported,
+  getPrefillParameterName,
 };

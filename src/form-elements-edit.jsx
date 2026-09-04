@@ -46,7 +46,56 @@ export default class FormElementsEdit extends React.Component {
       element: this.props.element,
       data: this.props.data,
       dirty: false,
+      fieldNameCopied: false,
     };
+  }
+
+  componentWillUnmount() {
+    if (this.copyFeedbackTimeout) {
+      clearTimeout(this.copyFeedbackTimeout);
+    }
+  }
+
+  showCopyFeedback() {
+    if (this.copyFeedbackTimeout) {
+      clearTimeout(this.copyFeedbackTimeout);
+    }
+    this.setState({ fieldNameCopied: true });
+    this.copyFeedbackTimeout = setTimeout(() => {
+      this.setState({ fieldNameCopied: false });
+    }, 2000);
+  }
+
+  copyFieldNameFallback(fieldName) {
+    const textArea = document.createElement('textarea');
+    textArea.value = fieldName;
+    textArea.setAttribute('readonly', '');
+    textArea.style.position = 'fixed';
+    textArea.style.opacity = '0';
+    document.body.appendChild(textArea);
+    textArea.select();
+
+    try {
+      if (document.execCommand('copy')) {
+        this.showCopyFeedback();
+      }
+    } finally {
+      document.body.removeChild(textArea);
+    }
+  }
+
+  copyFieldName() {
+    const fieldName = BookitupUtils.getPrefillParameterName(this.state.element.field_name);
+    if (!fieldName) return;
+
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(fieldName)
+        .then(() => this.showCopyFeedback())
+        .catch(() => this.copyFieldNameFallback(fieldName));
+      return;
+    }
+
+    this.copyFieldNameFallback(fieldName);
   }
 
   //   toggleRequired() {
@@ -166,6 +215,7 @@ export default class FormElementsEdit extends React.Component {
       canHaveOptionValue,
     } = this.props.element;
     const canHaveImageSize = this.state.element.element === 'Image' || this.state.element.element === 'Camera';
+    const prefillParameterName = BookitupUtils.getPrefillParameterName(this.props.element.field_name);
 
     const placeholderLabelSupported = ['TextInput', 'TextArea', 'PhoneNumber', 'EmailInput', 'DatePicker', 'Dropdown'].includes(this.state.element.element);
 
@@ -207,6 +257,35 @@ export default class FormElementsEdit extends React.Component {
               onBlur={this.updateElement.bind(this)}
               onChange={this.editElementProp.bind(this, 'titleName', 'value')}
             />
+          </div>
+        )}
+        {BookitupUtils.isPrefillSupported(this.props.element) && (
+          <div className="form-group">
+            <label className="control-label" htmlFor={`field-name-${this.props.element.id}`}>
+              Parameter zum Vorausfüllen:
+            </label>
+            <div className="input-group">
+              <input
+                id={`field-name-${this.props.element.id}`}
+                type="text"
+                className="form-control"
+                value={prefillParameterName}
+                disabled
+              />
+              <div className="input-group-append">
+                <button
+                  type="button"
+                  className="btn btn-outline-secondary"
+                  onClick={this.copyFieldName.bind(this)}
+                >
+                  <i className={`fas ${this.state.fieldNameCopied ? 'fa-check' : 'fa-copy'}`} aria-hidden="true" />{' '}
+                  {this.state.fieldNameCopied ? 'Kopiert' : 'Kopieren'}
+                </button>
+              </div>
+            </div>
+            <p className="help-block">
+              Verwende diesen Namen als Anfrageparameter, um dieses Feld vorauszufüllen.
+            </p>
           </div>
         )}
         {this.props.element.hasOwnProperty('content') && (
