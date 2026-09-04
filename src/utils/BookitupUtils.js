@@ -99,7 +99,7 @@ const getPrefillParameterName = (fieldName) => {
     return fieldName;
   }
 
-  if (fieldName.startsWith("custom")) {
+  if (fieldName.startsWith("custom-")) {
     return `custom-${uuidMatch[0].split("-")[0]}`;
   }
 
