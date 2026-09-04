@@ -99,6 +99,17 @@ display_short | boolean | Optional | Display an optional "shorter page/form" whi
 read_only | boolean | Optional | Shows a read only version which has fields disabled and removes "required" labels.
 variables | object | Optional | Key/value object that can be used for Signature variable replacement.
 
+### Prefilling from URL parameters
+
+Form fields can be prefilled by passing their `field_name` in the page URL. Both standard query parameters and parameters following an anchor are supported:
+
+```text
+https://example.com/form?email=jan@example.com
+https://example.com/form#kontaktformular?email=jan@example.com
+```
+
+If the same parameter is present in both places, the standard query parameter takes precedence. Existing values supplied through `answer_data` take precedence over all URL parameters.
+
 ### Read only Signatures
 
 Read only signatures allow you to use a saved/canned signature to be placed into the form. The signature will be passed in through the `variables` property to `ReactFormGenerator` and `ReactFormBuilder`.

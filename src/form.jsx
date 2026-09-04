@@ -146,12 +146,22 @@ class ReactForm extends React.Component {
   }
 
   _getRequestParams() {
-    const params = new URLSearchParams(window.location.search);
     const result = {};
-    // eslint-disable-next-line no-restricted-syntax
-    for (const [key, value] of params.entries()) {
-      result[key] = value;
+    const addParams = (queryString) => {
+      const params = new URLSearchParams(queryString);
+      params.forEach((value, key) => {
+        result[key] = value;
+      });
+    };
+
+    const hash = window.location.hash || '';
+    const hashQueryIndex = hash.indexOf('?');
+    if (hashQueryIndex >= 0) {
+      addParams(hash.slice(hashQueryIndex + 1));
     }
+
+    // Standard query parameters take precedence over parameters in the hash.
+    addParams(window.location.search);
     return result;
   }
 
