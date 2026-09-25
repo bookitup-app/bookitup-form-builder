@@ -345,7 +345,7 @@ export default class FormElementsEdit extends React.Component {
                   <IntlMessages id="display-label" />
                 </label>
                 <Editor
-                  toolbar={toolbar}
+                  toolbar={toolbarWithLink}
                   defaultEditorState={editorState}
                   onBlur={this.updateElement.bind(this)}
                   onEditorStateChange={this.onEditorStateChange.bind(this, 0, 'label')}
