@@ -479,10 +479,13 @@ class ReactForm extends React.Component {
 
   handlePreviousSection(e) {
     if (e) e.preventDefault();
-    this.setState(prevState => ({
-      currentSection: Math.max(0, prevState.currentSection - 1),
-      errors: {},
-    }));
+    this.setState(
+      prevState => ({
+        currentSection: Math.max(0, prevState.currentSection - 1),
+        errors: {},
+      }),
+      () => this._scrollToFormStart(),
+    );
   }
 
   validateForm(itemsToValidate) {
