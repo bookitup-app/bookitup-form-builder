@@ -33,6 +33,8 @@ class ReactForm extends React.Component {
 
   formContainer;
 
+  formStepper;
+
   inputs = {};
 
   state = {
@@ -440,16 +442,11 @@ class ReactForm extends React.Component {
     }
   }
 
-  _scrollToFormStartOnMobile() {
-    const scrollTarget = this.formContainer;
+  _scrollToFormStart() {
+    const scrollTarget = this.formStepper || this.formContainer;
     if (typeof window === 'undefined' || !scrollTarget || typeof scrollTarget.scrollIntoView !== 'function') {
       return;
     }
-
-    const isMobile = typeof window.matchMedia === 'function'
-      ? window.matchMedia('(max-width: 768px)').matches
-      : window.innerWidth <= 768;
-    if (!isMobile) return;
 
     const prefersReducedMotion = typeof window.matchMedia === 'function'
       && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -476,7 +473,7 @@ class ReactForm extends React.Component {
     }
     this.setState(
       { currentSection: currentSection + 1, errors: {} },
-      () => this._scrollToFormStartOnMobile(),
+      () => this._scrollToFormStart(),
     );
   }
 
@@ -789,6 +786,7 @@ class ReactForm extends React.Component {
                   <nav
                     id='rfb-form-stepper'
                     className='rfb-form-steps'
+                    ref={c => this.formStepper = c}
                     aria-label={this.props.intl.formatMessage({ id: 'form-progress' })}
                   >
                     <ol>
