@@ -31,6 +31,8 @@ const usableLocales = {
 class ReactForm extends React.Component {
   form;
 
+  formContainer;
+
   inputs = {};
 
   state = {
@@ -438,6 +440,25 @@ class ReactForm extends React.Component {
     }
   }
 
+  _scrollToFormStartOnMobile() {
+    const scrollTarget = this.formContainer;
+    if (typeof window === 'undefined' || !scrollTarget || typeof scrollTarget.scrollIntoView !== 'function') {
+      return;
+    }
+
+    const isMobile = typeof window.matchMedia === 'function'
+      ? window.matchMedia('(max-width: 768px)').matches
+      : window.innerWidth <= 768;
+    if (!isMobile) return;
+
+    const prefersReducedMotion = typeof window.matchMedia === 'function'
+      && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    scrollTarget.scrollIntoView({
+      behavior: prefersReducedMotion ? 'auto' : 'smooth',
+      block: 'start',
+    });
+  }
+
   handleNextSection(e) {
     if (e) e.preventDefault();
     const sections = this._buildSections(this._getRootItems());
@@ -453,7 +474,10 @@ class ReactForm extends React.Component {
       this.setState({ errors });
       return;
     }
-    this.setState({ currentSection: currentSection + 1, errors: {} });
+    this.setState(
+      { currentSection: currentSection + 1, errors: {} },
+      () => this._scrollToFormStartOnMobile(),
+    );
   }
 
   handlePreviousSection(e) {
@@ -751,7 +775,7 @@ class ReactForm extends React.Component {
       <div>
           {/* Hide top validation messaged display if inlineValidation */}
           {!this.props.inlineValidation && (<FormValidator emitter={this.emitter} />)}
-          <div className='react-form-builder-form'>
+          <div className='react-form-builder-form' ref={c => this.formContainer = c}>
           {!this.state.submitOk &&
               <form encType='multipart/form-data' ref={c => this.form = c} action={this.props.form_action} onBlur={this.handleBlur} onChange={this.handleChange} onSubmit={this.handleSubmit} method={this.props.form_method}>
                 {this.props.authenticity_token &&
