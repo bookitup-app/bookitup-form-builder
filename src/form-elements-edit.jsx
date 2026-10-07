@@ -295,7 +295,7 @@ export default class FormElementsEdit extends React.Component {
             </label>
 
             <Editor
-              toolbar={toolbar}
+              toolbar={this.props.element.element === 'Label' ? toolbarWithLink : toolbar}
               defaultEditorState={editorState}
               onBlur={this.updateElement.bind(this)}
               onEditorStateChange={this.onEditorStateChange.bind(this, 0, 'content')}
