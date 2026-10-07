@@ -184,6 +184,7 @@ export interface FormGeneratorProps {
   nextButtonText?: string;
   previousButtonText?: string;
   submitMessageText?: string;
+  scrollOffset?: number;
   showSubmitMessage?: boolean;
   useOptionNameInsteadOfKey?: boolean;
 }

@@ -450,8 +450,23 @@ class ReactForm extends React.Component {
 
     const prefersReducedMotion = typeof window.matchMedia === 'function'
       && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const behavior = prefersReducedMotion ? 'auto' : 'smooth';
+    const scrollOffset = Number(this.props.scrollOffset);
+
+    if (Number.isFinite(scrollOffset)
+      && typeof window.scrollTo === 'function'
+      && typeof scrollTarget.getBoundingClientRect === 'function') {
+      const scrollTop = window.pageYOffset || window.scrollY || 0;
+      const targetTop = scrollTarget.getBoundingClientRect().top + scrollTop - scrollOffset;
+      window.scrollTo({
+        top: Math.max(0, targetTop),
+        behavior,
+      });
+      return;
+    }
+
     scrollTarget.scrollIntoView({
-      behavior: prefersReducedMotion ? 'auto' : 'smooth',
+      behavior,
       block: 'start',
     });
   }
